@@ -12,6 +12,7 @@ import { CollectionForm } from "@/components/collection-form";
 import { Plus, Puzzle, X, Copy, Check, Settings, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useCollections, useProfile, useFollowStats, useFriendCollections } from "@/hooks/use-data";
 
 interface Collection {
   id: string;
@@ -202,12 +203,10 @@ function FriendsTab({
 
 export function DashboardView() {
   const { data: session } = useSession();
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [friendCollections, setFriendCollections] = useState<FriendCollection[]>([]);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [stats, setStats] = useState({ followersCount: 0, followingCount: 0 });
-  const [loading, setLoading] = useState(true);
-  const [friendsLoading, setFriendsLoading] = useState(false);
+  const { data: collections, mutate: mutateCollections, isLoading: loading } = useCollections();
+  const { data: profile } = useProfile();
+  const { data: stats } = useFollowStats();
+  const { data: friendCollections, isLoading: friendsLoading } = useFriendCollections();
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("mine");
   const [slugCopied, setSlugCopied] = useState(false);
@@ -224,52 +223,11 @@ export function DashboardView() {
     }
   }, []);
 
-  const fetchCollections = async () => {
-    const res = await fetch("/api/collections");
-    const data = await res.json();
-    setCollections(data);
-    setLoading(false);
-  };
-
-  const fetchProfile = async () => {
-    const res = await fetch("/api/profile");
-    if (res.ok) {
-      const data = await res.json();
-      setProfile(data);
-    }
-  };
-
-  const fetchStats = async () => {
-    const res = await fetch("/api/follows/me?tab=stats");
-    if (res.ok) {
-      const data = await res.json();
-      setStats(data);
-    }
-  };
-
-  const fetchFriendCollections = async () => {
-    setFriendsLoading(true);
-    const res = await fetch("/api/follows/me?tab=friends-collections");
-    if (res.ok) {
-      setFriendCollections(await res.json());
-    }
-    setFriendsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchCollections();
-    fetchProfile();
-    fetchStats();
-  }, []);
-
-  useEffect(() => {
-    if (activeTab === "friends" && friendCollections.length === 0 && !friendsLoading) {
-      fetchFriendCollections();
-    }
-  }, [activeTab]);
-
   const handleDeleted = (id: string) => {
-    setCollections((prev) => prev.filter((c) => c.id !== id));
+    mutateCollections(
+      (prev) => prev?.filter((c) => c.id !== id),
+      { revalidate: false }
+    );
   };
 
   const handleCopyLink = () => {
@@ -315,18 +273,18 @@ export function DashboardView() {
               <p className="text-xs text-muted-foreground mt-0.5">{profile.email}</p>
               <div className="flex items-center gap-3 mt-2 justify-center sm:justify-start">
                 <span className="text-sm">
-                  <span className="font-medium">{stats.followingCount}</span>{" "}
+                  <span className="font-medium">{stats?.followingCount ?? 0}</span>{" "}
                   <span className="text-muted-foreground">abonnements</span>
                 </span>
                 <span className="text-sm">
-                  <span className="font-medium">{stats.followersCount}</span>{" "}
+                  <span className="font-medium">{stats?.followersCount ?? 0}</span>{" "}
                   <span className="text-muted-foreground">
-                    abonné{stats.followersCount !== 1 ? "s" : ""}
+                    abonné{(stats?.followersCount ?? 0) !== 1 ? "s" : ""}
                   </span>
                 </span>
                 <span className="text-muted-foreground text-sm">&middot;</span>
                 <span className="text-sm text-muted-foreground">
-                  {collections.length} collection{collections.length !== 1 ? "s" : ""}
+                  {(collections?.length ?? 0)} collection{(collections?.length ?? 0) !== 1 ? "s" : ""}
                 </span>
               </div>
             </div>
@@ -431,7 +389,7 @@ export function DashboardView() {
                 </div>
               ))}
             </div>
-          ) : collections.length === 0 ? (
+          ) : !collections || collections.length === 0 ? (
             <div className="text-center py-20">
               <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-muted/50 mb-4">
                 <Plus className="h-6 w-6 text-muted-foreground/50" />
@@ -444,7 +402,7 @@ export function DashboardView() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {collections.map((collection) => (
+              {(collections ?? []).map((collection) => (
                 <CollectionCard
                   key={collection.id}
                   collection={collection}
@@ -456,15 +414,15 @@ export function DashboardView() {
         ) : (
           <FriendsTab
             loading={friendsLoading}
-            collections={friendCollections}
-            followingCount={stats.followingCount}
+            collections={friendCollections ?? []}
+            followingCount={stats?.followingCount ?? 0}
           />
         )}
 
         <CollectionForm
           open={showForm}
           onOpenChange={setShowForm}
-          onSuccess={fetchCollections}
+          onSuccess={() => mutateCollections()}
         />
       </main>
       <Footer />

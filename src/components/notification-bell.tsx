@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Bell, Check, X } from "lucide-react";
 import { toast } from "sonner";
+import { useNotifications } from "@/hooks/use-data";
 
 interface Notification {
   id: string;
@@ -22,26 +23,14 @@ interface Notification {
 }
 
 export function NotificationBell() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { data: notifications = [], mutate } = useNotifications() as {
+    data: Notification[];
+    mutate: (data?: Notification[] | ((prev?: Notification[]) => Notification[] | undefined), opts?: { revalidate?: boolean }) => void;
+  };
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const res = await fetch("/api/notifications");
-      if (res.ok) {
-        setNotifications(await res.json());
-      }
-    } catch {}
-  }, []);
-
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, [fetchNotifications]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -59,7 +48,10 @@ export function NotificationBell() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ all: true }),
     });
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    mutate(
+      (prev) => prev?.map((n) => ({ ...n, read: true })),
+      { revalidate: false }
+    );
   };
 
   const handleRespond = async (notification: Notification, accept: boolean) => {
@@ -77,14 +69,14 @@ export function NotificationBell() {
 
     if (res.ok) {
       toast.success(accept ? "Invitation acceptée" : "Invitation déclinée");
-      // Mark as read
       await fetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: [notification.id] }),
       });
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
+      mutate(
+        (prev) => prev?.map((n) => (n.id === notification.id ? { ...n, read: true } : n)),
+        { revalidate: false }
       );
     } else {
       toast.error("Une erreur est survenue");

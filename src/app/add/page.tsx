@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, Check, Gift, Plus, ImagePlus, Globe, Lock, Puzzle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCollections } from "@/hooks/use-data";
 
 interface Collection {
   id: string;
@@ -111,9 +112,10 @@ function AddPageContent() {
   const preselectedCollectionId = searchParams.get("collectionId") || "";
   const fromExtension = searchParams.get("from") === "extension";
 
+  const { data: swrCollections, isLoading: loadingCollections, mutate: mutateCollections } = useCollections();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollectionId, setSelectedCollectionId] = useState("");
-  const [loadingCollections, setLoadingCollections] = useState(true);
+  const [collectionsInitialized, setCollectionsInitialized] = useState(false);
 
   const extensionImages = (() => {
     try {
@@ -145,21 +147,18 @@ function AddPageContent() {
   );
   const selectedCollection = collections.find((c) => c.id === selectedCollectionId);
 
-  // Fetch collections
+  // Sync SWR data to local state for mutations (create collection)
   useEffect(() => {
-    fetch("/api/collections")
-      .then((res) => res.json())
-      .then((data) => {
-        setCollections(data);
-        if (preselectedCollectionId && data.some((c: Collection) => c.id === preselectedCollectionId)) {
-          setSelectedCollectionId(preselectedCollectionId);
-        } else if (data.length > 0) {
-          setSelectedCollectionId(data[0].id);
-        }
-      })
-      .catch(() => toast.error("Échec du chargement des collections"))
-      .finally(() => setLoadingCollections(false));
-  }, []);
+    if (swrCollections && !collectionsInitialized) {
+      setCollections(swrCollections);
+      if (preselectedCollectionId && swrCollections.some((c) => c.id === preselectedCollectionId)) {
+        setSelectedCollectionId(preselectedCollectionId);
+      } else if (swrCollections.length > 0) {
+        setSelectedCollectionId(swrCollections[0].id);
+      }
+      setCollectionsInitialized(true);
+    }
+  }, [swrCollections, collectionsInitialized, preselectedCollectionId]);
 
   // Scrape URL
   const scrapeUrl = useCallback(async (targetUrl: string) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Header } from "@/components/header";
@@ -27,6 +27,7 @@ import {
 import { Plus, ArrowLeft, Copy, Pencil, LogOut, Globe, Lock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useCollection } from "@/hooks/use-data";
 
 interface Wish {
   id: string;
@@ -120,8 +121,12 @@ export default function CollectionPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: session } = useSession();
-  const [collection, setCollection] = useState<Collection | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: collection, mutate: mutateCollection, isLoading: loading, error } = useCollection(id) as {
+    data: Collection | undefined;
+    mutate: (data?: Collection | ((prev?: Collection) => Collection | undefined), opts?: { revalidate?: boolean }) => void;
+    isLoading: boolean;
+    error: Error | undefined;
+  };
   const navigateToAdd = () => router.push(`/add?collectionId=${id}`);
   const [showEditCollection, setShowEditCollection] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
@@ -131,6 +136,11 @@ export default function CollectionPage() {
   const isOwner = collection?.role === "owner";
   const isCollaborator = collection?.role === "collaborator";
   const currentUserId = session?.user?.id;
+
+  // Redirect on error (not found / unauthorized)
+  if (error) {
+    router.push("/");
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -149,7 +159,7 @@ export default function CollectionPage() {
       const [moved] = wishes.splice(oldIndex, 1);
       wishes.splice(newIndex, 0, moved);
 
-      setCollection({ ...collection, wishes });
+      mutateCollection({ ...collection, wishes }, { revalidate: false });
 
       fetch("/api/wishes/reorder", {
         method: "POST",
@@ -160,23 +170,8 @@ export default function CollectionPage() {
         }),
       });
     },
-    [collection]
+    [collection, mutateCollection]
   );
-
-  const fetchCollection = async () => {
-    const res = await fetch(`/api/collections/${id}`);
-    if (!res.ok) {
-      router.push("/");
-      return;
-    }
-    const data = await res.json();
-    setCollection(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchCollection();
-  }, [id]);
 
   const togglePublic = async () => {
     if (!collection) return;
@@ -186,7 +181,7 @@ export default function CollectionPage() {
       body: JSON.stringify({ isPublic: !collection.isPublic }),
     });
     if (res.ok) {
-      setCollection({ ...collection, isPublic: !collection.isPublic });
+      mutateCollection({ ...collection, isPublic: !collection.isPublic }, { revalidate: false });
       toast.success(collection.isPublic ? "Collection maintenant privée" : "Collection maintenant publique");
     }
   };
@@ -199,21 +194,19 @@ export default function CollectionPage() {
 
   const handleWishDeleted = (wishId: string) => {
     if (!collection) return;
-    setCollection({
-      ...collection,
-      wishes: collection.wishes.filter((w) => w.id !== wishId),
-    });
+    mutateCollection(
+      { ...collection, wishes: collection.wishes.filter((w) => w.id !== wishId) },
+      { revalidate: false }
+    );
   };
 
   const handleTogglePriority = async (wish: Wish) => {
     if (!collection) return;
     const newPriority = !wish.isPriority;
-    setCollection({
-      ...collection,
-      wishes: collection.wishes.map((w) =>
-        w.id === wish.id ? { ...w, isPriority: newPriority } : w
-      ),
-    });
+    mutateCollection(
+      { ...collection, wishes: collection.wishes.map((w) => w.id === wish.id ? { ...w, isPriority: newPriority } : w) },
+      { revalidate: false }
+    );
     toast.success(newPriority ? "Marqué comme prioritaire" : "Priorité retirée");
     const res = await fetch(`/api/wishes/${wish.id}`, {
       method: "PATCH",
@@ -221,10 +214,9 @@ export default function CollectionPage() {
       body: JSON.stringify({ isPriority: newPriority }),
     });
     if (!res.ok) {
-      setCollection((prev) =>
-        prev
-          ? { ...prev, wishes: prev.wishes.map((w) => (w.id === wish.id ? { ...w, isPriority: wish.isPriority } : w)) }
-          : prev
+      mutateCollection(
+        (prev) => prev ? { ...prev, wishes: prev.wishes.map((w) => (w.id === wish.id ? { ...w, isPriority: wish.isPriority } : w)) } : prev,
+        { revalidate: false }
       );
       toast.error("Échec de la mise à jour");
     }
@@ -446,7 +438,7 @@ export default function CollectionPage() {
           <CollectionForm
             open={showEditCollection}
             onOpenChange={setShowEditCollection}
-            onSuccess={fetchCollection}
+            onSuccess={() => mutateCollection()}
             collection={collection}
           />
         )}
@@ -460,7 +452,7 @@ export default function CollectionPage() {
         <EditWishDialog
           wish={editingWish}
           onOpenChange={(open) => !open && setEditingWish(null)}
-          onUpdated={fetchCollection}
+          onUpdated={() => mutateCollection()}
         />
       </main>
       <Footer />
