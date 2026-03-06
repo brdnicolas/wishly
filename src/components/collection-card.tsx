@@ -22,7 +22,7 @@ interface Collection {
   wishes?: { imageUrl: string | null }[];
 }
 
-function ImageMosaic({ images }: { images: string[] }) {
+export function ImageMosaic({ images }: { images: string[] }) {
   if (images.length === 0) {
     return (
       <div className="w-full aspect-[2/1] bg-muted/30 flex items-center justify-center rounded-t-lg">
@@ -39,10 +39,20 @@ function ImageMosaic({ images }: { images: string[] }) {
     );
   }
 
-  if (images.length <= 3) {
+  if (images.length === 2) {
     return (
       <div className="w-full aspect-[2/1] rounded-t-lg overflow-hidden grid grid-cols-2 gap-px bg-border">
-        {images.slice(0, 2).map((img, i) => (
+        {images.map((img, i) => (
+          <img key={i} src={img} alt="" className="w-full h-full object-cover" />
+        ))}
+      </div>
+    );
+  }
+
+  if (images.length === 3) {
+    return (
+      <div className="w-full aspect-[2/1] rounded-t-lg overflow-hidden grid grid-cols-3 gap-px bg-border">
+        {images.map((img, i) => (
           <img key={i} src={img} alt="" className="w-full h-full object-cover" />
         ))}
       </div>

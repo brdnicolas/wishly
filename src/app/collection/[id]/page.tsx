@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { WishCard } from "@/components/wish-card";
-import { AddWishDialog } from "@/components/add-wish-dialog";
+
 import { EditWishDialog } from "@/components/edit-wish-dialog";
 import { CollectionForm } from "@/components/collection-form";
 import { MasonryGrid } from "@/components/masonry-grid";
@@ -40,7 +40,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
   const router = useRouter();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showAddWish, setShowAddWish] = useState(false);
+  const navigateToAdd = () => router.push(`/add?collectionId=${id}`);
   const [showEditCollection, setShowEditCollection] = useState(false);
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
@@ -169,7 +169,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
               Share
             </Button>
 
-            <Button size="sm" onClick={() => setShowAddWish(true)}>
+            <Button size="sm" onClick={() => navigateToAdd()}>
               <Plus className="h-4 w-4 mr-1" />
               Add
             </Button>
@@ -178,7 +178,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
 
         <MasonryGrid>
           <button
-            onClick={() => setShowAddWish(true)}
+            onClick={() => navigateToAdd()}
             className="w-full flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border bg-card aspect-[3/4] text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:shadow-md transition-all cursor-pointer"
           >
             <div className="h-10 w-10 rounded-full border-2 border-current flex items-center justify-center">
@@ -198,12 +198,6 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
           ))}
         </MasonryGrid>
 
-        <AddWishDialog
-          open={showAddWish}
-          onOpenChange={setShowAddWish}
-          collectionId={id}
-          onCreated={fetchCollection}
-        />
 
         <CollectionForm
           open={showEditCollection}

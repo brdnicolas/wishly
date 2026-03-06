@@ -7,9 +7,9 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CollectionCard } from "@/components/collection-card";
+import { CollectionCard, ImageMosaic } from "@/components/collection-card";
 import { CollectionForm } from "@/components/collection-form";
-import { Plus, Share2, ImageIcon } from "lucide-react";
+import { Plus, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -62,20 +62,7 @@ function FriendCollectionCard({ col }: { col: FriendCollection }) {
       href={`/w/${col.slug}`}
       className="group w-44 sm:w-52 shrink-0 snap-start rounded-lg border border-border bg-card overflow-hidden transition-shadow hover:shadow-md"
     >
-      {images.length > 0 ? (
-        <div className="w-full aspect-[2/1] overflow-hidden grid grid-cols-3 grid-rows-2 gap-px bg-border rounded-t-lg">
-          {images.slice(0, 6).map((img, i) => (
-            <img key={i} src={img} alt="" loading="lazy" className="w-full h-full object-cover" />
-          ))}
-          {Array.from({ length: Math.max(0, 6 - images.length) }).map((_, i) => (
-            <div key={`empty-${i}`} className="bg-muted/30" />
-          ))}
-        </div>
-      ) : (
-        <div className="w-full aspect-[2/1] bg-muted/30 flex items-center justify-center rounded-t-lg">
-          <ImageIcon className="h-8 w-8 text-muted-foreground/20" />
-        </div>
-      )}
+      <ImageMosaic images={images} />
       <div className="p-3">
         <h3 className="font-medium truncate text-sm group-hover:underline underline-offset-4">
           {col.name}

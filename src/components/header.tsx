@@ -9,10 +9,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, X, Settings } from "lucide-react";
+import { Search, X, Mail, LayoutGrid, Settings, LogOut } from "lucide-react";
 
 interface SearchUser {
   id: string;
@@ -163,11 +164,15 @@ export function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="text-muted-foreground text-xs" disabled>
+                  <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground text-xs" disabled>
+                    <Mail className="h-4 w-4" />
                     {session.user?.email}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">My Collections</Link>
+                    <Link href="/dashboard" className="flex items-center gap-2">
+                      <LayoutGrid className="h-4 w-4" />
+                      My Collections
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center gap-2">
@@ -175,7 +180,9 @@ export function Header() {
                       Settings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-2">
+                    <LogOut className="h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
