@@ -1,5 +1,5 @@
 (() => {
-  const ENVLY_URL = "http://localhost:3000";
+  const ENVLY_URL = "https://envly.vercel.app";
   const PRICE_REGEX =
     /(?:\d[\d\s.,]*\d\s*[€$£]|[€$£]\s*\d[\d\s.,]*\d|\d[\d\s.,]*\d\s*(?:EUR|USD|GBP))/i;
 
