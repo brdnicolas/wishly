@@ -15,11 +15,20 @@ async function fetchHTML(url: string): Promise<string> {
         "User-Agent": BROWSER_UA,
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
         "Cache-Control": "no-cache",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Upgrade-Insecure-Requests": "1",
       },
       redirect: "follow",
       signal: controller.signal,
     });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
     return res.text();
   } finally {
     clearTimeout(timeout);
