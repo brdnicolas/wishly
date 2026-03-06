@@ -1,56 +1,62 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function isValidUrl(str: string) {
-  try {
-    const url = new URL(str);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
+interface Collection {
+  id: string;
+  name: string;
+  slug: string;
 }
 
-export function AddWishDialog({
-  open,
-  onOpenChange,
-  collectionId,
-  onCreated,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  collectionId: string;
-  onCreated: () => void;
-}) {
-  const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
+export default function AddPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const sharedUrl = searchParams.get("url") || searchParams.get("text") || "";
+
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [selectedCollectionId, setSelectedCollectionId] = useState("");
+  const [loadingCollections, setLoadingCollections] = useState(true);
+
+  const [url, setUrl] = useState(sharedUrl);
+  const [title, setTitle] = useState(searchParams.get("title") || "");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [scraping, setScraping] = useState(false);
   const [saving, setSaving] = useState(false);
-  const lastScrapedUrl = useRef("");
 
+  // Fetch collections
+  useEffect(() => {
+    fetch("/api/collections")
+      .then((res) => res.json())
+      .then((data) => {
+        setCollections(data);
+        if (data.length > 0) setSelectedCollectionId(data[0].id);
+      })
+      .catch(() => toast.error("Failed to load collections"))
+      .finally(() => setLoadingCollections(false));
+  }, []);
+
+  // Scrape URL
   const scrapeUrl = useCallback(async (targetUrl: string) => {
-    if (!targetUrl || !isValidUrl(targetUrl)) return;
-    if (targetUrl === lastScrapedUrl.current) return;
-    lastScrapedUrl.current = targetUrl;
-    setScraping(true);
+    if (!targetUrl) return;
+    try {
+      new URL(targetUrl);
+    } catch {
+      return;
+    }
 
+    setScraping(true);
     try {
       const res = await fetch("/api/scrape", {
         method: "POST",
@@ -78,23 +84,25 @@ export function AddWishDialog({
     } catch {
       toast.error("Failed to fetch URL");
     }
-
     setScraping(false);
   }, []);
 
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setUrl(value);
-
-    if (isValidUrl(value) && value !== lastScrapedUrl.current) {
-      scrapeUrl(value);
+  // Auto-scrape on mount if URL provided
+  useEffect(() => {
+    if (sharedUrl) {
+      scrapeUrl(sharedUrl);
     }
-  };
+  }, [sharedUrl, scrapeUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
 
+    if (!selectedCollectionId) {
+      toast.error("Please select a collection");
+      return;
+    }
+
+    setSaving(true);
     const res = await fetch("/api/wishes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,43 +112,78 @@ export function AddWishDialog({
         description: description || null,
         imageUrl: imageUrl || null,
         price: price || null,
-        collectionId,
+        collectionId: selectedCollectionId,
       }),
     });
 
     if (res.ok) {
-      setUrl("");
-      setTitle("");
-      setDescription("");
-      setImageUrl("");
-      setPrice("");
-      setImages([]);
-      lastScrapedUrl.current = "";
-      onCreated();
-      onOpenChange(false);
       toast.success("Wish added!");
+      const collection = collections.find((c) => c.id === selectedCollectionId);
+      router.push(collection ? `/collection/${collection.slug}` : "/dashboard");
     } else {
       toast.error("Failed to add wish");
     }
-
     setSaving(false);
   };
 
+  if (loadingCollections) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (collections.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
+        <p className="text-muted-foreground text-center">
+          You need at least one collection to add a wish.
+        </p>
+        <Button onClick={() => router.push("/dashboard")}>
+          Go to Dashboard
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add a wish</DialogTitle>
-        </DialogHeader>
+    <div className="min-h-screen flex items-start justify-center px-4 py-12">
+      <div className="w-full max-w-lg space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Add a wish</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Save this item to one of your collections.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Collection selector */}
           <div className="space-y-1.5">
-            <Label htmlFor="url">URL (optional — paste to auto-fill)</Label>
+            <Label htmlFor="collection">Collection</Label>
+            <select
+              id="collection"
+              value={selectedCollectionId}
+              onChange={(e) => setSelectedCollectionId(e.target.value)}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              {collections.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* URL */}
+          <div className="space-y-1.5">
+            <Label htmlFor="url">URL</Label>
             <div className="relative">
               <Input
                 id="url"
                 value={url}
-                onChange={handleUrlChange}
-                placeholder="Paste a product link to auto-fill..."
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://..."
               />
               {scraping && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -150,6 +193,7 @@ export function AddWishDialog({
             </div>
           </div>
 
+          {/* Image picker */}
           {images.length > 0 && (
             <div className="space-y-1.5">
               <Label>Select an image</Label>
@@ -185,6 +229,7 @@ export function AddWishDialog({
             </div>
           )}
 
+          {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -196,10 +241,11 @@ export function AddWishDialog({
             />
           </div>
 
+          {/* Description */}
           <div className="space-y-1.5">
-            <Label htmlFor="wish-description">Description (optional)</Label>
+            <Label htmlFor="add-description">Description (optional)</Label>
             <Textarea
-              id="wish-description"
+              id="add-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Color, size, or any details..."
@@ -207,6 +253,7 @@ export function AddWishDialog({
             />
           </div>
 
+          {/* Price */}
           <div className="space-y-1.5">
             <Label htmlFor="price">Price (optional)</Label>
             <Input
@@ -223,7 +270,7 @@ export function AddWishDialog({
             {saving ? "Adding..." : "Add wish"}
           </Button>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }

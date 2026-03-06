@@ -28,7 +28,8 @@ function extractJsonLd($: cheerio.CheerioAPI) {
       const items = Array.isArray(data) ? data : [data];
       for (const item of items) {
         if (item["@type"] === "Product" || item["@type"]?.includes?.("Product")) {
-          const images = Array.isArray(item.image) ? item.image : item.image ? [item.image] : [];
+          const rawImages = Array.isArray(item.image) ? item.image : item.image ? [item.image] : [];
+          const images = rawImages.map((img: unknown) => typeof img === "string" ? img : (img as Record<string, string>)?.url).filter(Boolean) as string[];
           results.push({
             title: item.name || null,
             description: item.description || null,

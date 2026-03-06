@@ -7,6 +7,15 @@ import { WishCard } from "@/components/wish-card";
 import { ReserveDialog } from "@/components/reserve-dialog";
 import { MasonryGrid } from "@/components/masonry-grid";
 import { Badge } from "@/components/ui/badge";
+import { FollowButton } from "@/components/follow-button";
+import { FollowedBy } from "@/components/followed-by";
+
+interface FollowData {
+  collectionId: string;
+  initialFollowing: boolean;
+  followers: { name: string | null; image: string | null }[];
+  totalFollowers: number;
+}
 
 interface Wish {
   id: string;
@@ -14,6 +23,7 @@ interface Wish {
   description: string | null;
   url: string | null;
   imageUrl: string | null;
+  imageOriginalUrl?: string | null;
   price: number | null;
   isPriority?: boolean;
   reservation?: { reservedBy: string } | null;
@@ -23,6 +33,7 @@ export function PublicCollectionView({
   collection,
   wishes: initialWishes,
   isOwner,
+  followData,
 }: {
   collection: {
     name: string;
@@ -31,6 +42,7 @@ export function PublicCollectionView({
   };
   wishes: Wish[];
   isOwner: boolean;
+  followData?: FollowData;
 }) {
   const [wishes, setWishes] = useState(initialWishes);
   const [reserveWish, setReserveWish] = useState<Wish | null>(null);
@@ -71,6 +83,21 @@ export function PublicCollectionView({
             <p className="text-muted-foreground text-xs mt-1">
               by {collection.ownerName}
             </p>
+          )}
+          {followData && (
+            <div className="flex items-center gap-3 mt-2">
+              <FollowButton
+                type="collection"
+                targetId={followData.collectionId}
+                initialFollowing={followData.initialFollowing}
+              />
+              {followData.totalFollowers > 0 && (
+                <FollowedBy
+                  followers={followData.followers}
+                  totalCount={followData.totalFollowers}
+                />
+              )}
+            </div>
           )}
         </div>
 

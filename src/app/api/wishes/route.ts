@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -23,8 +24,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Collection not found" }, { status: 404 });
   }
 
+  let finalImageUrl = imageUrl || null;
+  let imageOriginalUrl: string | null = null;
+
+  if (imageUrl) {
+    const cdnUrl = await uploadToCloudinary(imageUrl);
+    if (cdnUrl) {
+      finalImageUrl = cdnUrl;
+      imageOriginalUrl = imageUrl;
+    }
+  }
+
   const wish = await prisma.wish.create({
-    data: { title, url, description, imageUrl, price: price ? parseFloat(price) : null, collectionId },
+    data: {
+      title,
+      url,
+      description,
+      imageUrl: finalImageUrl,
+      imageOriginalUrl,
+      price: price ? parseFloat(price) : null,
+      collectionId,
+    },
   });
 
   return NextResponse.json(wish);

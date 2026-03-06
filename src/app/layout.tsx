@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Wishly - Shared Wishlists",
   description: "Create and share wishlists with anonymous reservations",
+  manifest: "/manifest.json",
+  themeColor: "#000000",
+  icons: {
+    apple: "/icon-192.png",
+  },
 };
 
 export default function RootLayout({

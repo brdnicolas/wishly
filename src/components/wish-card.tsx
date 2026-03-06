@@ -12,6 +12,7 @@ interface Wish {
   description: string | null;
   url: string | null;
   imageUrl: string | null;
+  imageOriginalUrl?: string | null;
   price: number | null;
   isPriority?: boolean;
   reservation?: { reservedBy: string } | null;
@@ -72,7 +73,11 @@ export function WishCard({
             alt={wish.title}
             className="w-full object-cover transition-transform duration-200 group-hover:scale-105"
             onError={(e) => {
-              e.currentTarget.style.display = "none";
+              if (wish.imageOriginalUrl && e.currentTarget.src !== wish.imageOriginalUrl) {
+                e.currentTarget.src = wish.imageOriginalUrl;
+              } else {
+                e.currentTarget.style.display = "none";
+              }
             }}
           />
         ) : (

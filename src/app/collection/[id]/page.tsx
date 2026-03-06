@@ -21,6 +21,7 @@ interface Wish {
   description: string | null;
   url: string | null;
   imageUrl: string | null;
+  imageOriginalUrl?: string | null;
   price: number | null;
   isPriority: boolean;
 }

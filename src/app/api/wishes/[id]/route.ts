@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { deleteFromCloudinary } from "@/lib/cloudinary";
 
 export async function PATCH(
   req: Request,
@@ -60,6 +61,10 @@ export async function DELETE(
   }
 
   await prisma.wish.delete({ where: { id } });
+
+  if (wish.imageUrl?.includes("cloudinary")) {
+    deleteFromCloudinary(wish.imageUrl);
+  }
 
   return NextResponse.json({ success: true });
 }

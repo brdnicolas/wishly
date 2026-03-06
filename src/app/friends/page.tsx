@@ -1,0 +1,133 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { UserSearch } from "@/components/user-search";
+import { UserCard } from "@/components/user-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Users, UserCheck, Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type Tab = "following" | "followers" | "collections";
+
+interface UserItem {
+  id: string;
+  name: string | null;
+  image: string | null;
+  slug: string | null;
+  isFollowing: boolean;
+}
+
+interface CollectionItem {
+  id: string;
+  name: string;
+  description: string | null;
+  slug: string;
+  ownerName: string | null;
+  wishCount: number;
+}
+
+const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
+  { key: "following", label: "Following", icon: <UserCheck className="h-4 w-4" /> },
+  { key: "followers", label: "Followers", icon: <Users className="h-4 w-4" /> },
+  { key: "collections", label: "Collections", icon: <Heart className="h-4 w-4" /> },
+];
+
+export default function FriendsPage() {
+  const [activeTab, setActiveTab] = useState<Tab>("following");
+  const [users, setUsers] = useState<UserItem[]>([]);
+  const [collections, setCollections] = useState<CollectionItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/follows/me?tab=${activeTab}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (activeTab === "collections") {
+          setCollections(data);
+        } else {
+          setUsers(data);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [activeTab]);
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+        <h1 className="text-2xl font-semibold mb-6">Friends</h1>
+
+        <UserSearch />
+
+        <div className="flex gap-1 mt-8 mb-4 border-b border-border">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
+                activeTab === tab.key
+                  ? "border-foreground text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            Loading...
+          </p>
+        ) : activeTab === "collections" ? (
+          collections.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No followed collections yet
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {collections.map((col) => (
+                <Link
+                  key={col.id}
+                  href={`/w/${col.slug}`}
+                  className="flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:shadow-sm transition-shadow"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{col.name}</p>
+                    {col.ownerName && (
+                      <p className="text-xs text-muted-foreground">
+                        by {col.ownerName}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground shrink-0 ml-3">
+                    {col.wishCount} wish{col.wishCount !== 1 ? "es" : ""}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )
+        ) : users.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            {activeTab === "following"
+              ? "You're not following anyone yet"
+              : "No followers yet"}
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {users.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        )}
+      </main>
+      <Footer />
+    </div>
+  );
+}

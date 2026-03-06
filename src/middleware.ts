@@ -17,8 +17,13 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/collection/:path*",
+    "/settings",
     "/api/collections/:path*",
     "/api/wishes/:path*",
+    "/api/follows/:path*",
+    "/api/users/:path*",
     "/api/scrape",
+    "/api/profile",
+    "/add",
   ],
 };
