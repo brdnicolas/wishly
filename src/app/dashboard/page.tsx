@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CollectionCard, ImageMosaic } from "@/components/collection-card";
 import { CollectionForm } from "@/components/collection-form";
-import { Plus, Share2 } from "lucide-react";
+import { Plus, Share2, Puzzle, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -195,6 +195,13 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [generatingLink, setGeneratingLink] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("mine");
+  const [showExtensionBanner, setShowExtensionBanner] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("wishly-extension-banner-dismissed") !== "true") {
+      setShowExtensionBanner(true);
+    }
+  }, []);
 
   const fetchCollections = async () => {
     const res = await fetch("/api/collections");
@@ -314,6 +321,29 @@ export default function DashboardPage() {
               <Share2 className="h-4 w-4 mr-1" />
               {profile.slug ? "Copy profile link" : "Share my profile"}
             </Button>
+          </div>
+        )}
+
+        {/* Extension banner */}
+        {showExtensionBanner && (
+          <div className="relative flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3 mb-6">
+            <Puzzle className="h-5 w-5 text-muted-foreground shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium">Add wishes faster with our Chrome extension</p>
+              <p className="text-xs text-muted-foreground">
+                Browse any store and save items to your wishlist in one click — no copy-pasting needed.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setShowExtensionBanner(false);
+                localStorage.setItem("wishly-extension-banner-dismissed", "true");
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors shrink-0 p-1"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         )}
 

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, description } = await req.json();
+  const { name, description, isPublic } = await req.json();
 
   if (!name) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
       name,
       description,
       slug,
+      isPublic: isPublic === true,
       userId: session.user.id,
     },
   });

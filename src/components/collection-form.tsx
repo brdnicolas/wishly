@@ -12,11 +12,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Globe, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CollectionData {
   id: string;
   name: string;
   description: string | null;
+  isPublic?: boolean;
 }
 
 export function CollectionForm({
@@ -32,6 +35,7 @@ export function CollectionForm({
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const isEdit = !!collection;
@@ -40,9 +44,11 @@ export function CollectionForm({
     if (collection) {
       setName(collection.name);
       setDescription(collection.description || "");
+      setIsPublic(collection.isPublic ?? false);
     } else {
       setName("");
       setDescription("");
+      setIsPublic(false);
     }
   }, [collection, open]);
 
@@ -56,7 +62,7 @@ export function CollectionForm({
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, description }),
+      body: JSON.stringify({ name, description, isPublic }),
     });
 
     if (res.ok) {
@@ -101,6 +107,30 @@ export function CollectionForm({
               rows={3}
             />
           </div>
+          <div className="space-y-1.5">
+            <Label>Visibility</Label>
+            <button
+              type="button"
+              onClick={() => setIsPublic(!isPublic)}
+              className={cn(
+                "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors",
+                isPublic
+                  ? "border-primary bg-primary/5 text-foreground"
+                  : "border-input bg-transparent text-muted-foreground"
+              )}
+            >
+              {isPublic ? (
+                <Globe className="h-4 w-4" />
+              ) : (
+                <Lock className="h-4 w-4" />
+              )}
+              <span className="font-medium">{isPublic ? "Public" : "Private"}</span>
+              <span className="text-xs ml-auto">
+                {isPublic ? "Anyone with the link can see it" : "Only you can see it"}
+              </span>
+            </button>
+          </div>
+
           <Button type="submit" className="w-full" disabled={loading}>
             {loading
               ? isEdit ? "Saving..." : "Creating..."

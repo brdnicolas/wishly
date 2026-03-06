@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, Check, Gift } from "lucide-react";
+import { Loader2, Check, Gift, Plus, ImagePlus, Globe, Lock, Puzzle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Collection {
@@ -98,19 +97,41 @@ export default function AddPage() {
 
   const sharedUrl = searchParams.get("url") || searchParams.get("text") || "";
   const preselectedCollectionId = searchParams.get("collectionId") || "";
+  const fromExtension = searchParams.get("from") === "extension";
 
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollectionId, setSelectedCollectionId] = useState("");
   const [loadingCollections, setLoadingCollections] = useState(true);
 
+  const extensionImages = (() => {
+    try {
+      const raw = searchParams.get("images");
+      if (fromExtension && raw) return JSON.parse(raw) as string[];
+    } catch {}
+    return [] as string[];
+  })();
+
   const [url, setUrl] = useState(sharedUrl);
   const [title, setTitle] = useState(searchParams.get("title") || "");
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [price, setPrice] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState(extensionImages[0] || "");
+  const [price, setPrice] = useState(fromExtension ? (searchParams.get("price") || "") : "");
+  const [images, setImages] = useState<string[]>(extensionImages);
   const [scraping, setScraping] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [creatingCollection, setCreatingCollection] = useState(false);
+  const [newCollectionPublic, setNewCollectionPublic] = useState(false);
+  const [collectionQuery, setCollectionQuery] = useState("");
+  const [collectionOpen, setCollectionOpen] = useState(false);
+  const collectionRef = useRef<HTMLDivElement>(null);
+
+  const filteredCollections = collections.filter((c) =>
+    c.name.toLowerCase().includes(collectionQuery.toLowerCase())
+  );
+  const exactMatch = collections.some(
+    (c) => c.name.toLowerCase() === collectionQuery.toLowerCase()
+  );
+  const selectedCollection = collections.find((c) => c.id === selectedCollectionId);
 
   // Fetch collections
   useEffect(() => {
@@ -148,7 +169,6 @@ export default function AddPage() {
       if (res.ok) {
         const data = await res.json();
         if (data.title) setTitle(data.title);
-        if (data.description) setDescription(data.description);
         const bestImage = data.imageUrl || data.images?.[0] || "";
         const imgList: string[] = data.images || [];
         if (bestImage && !imgList.includes(bestImage)) {
@@ -168,12 +188,79 @@ export default function AddPage() {
     setScraping(false);
   }, []);
 
-  // Auto-scrape on mount if URL provided
+  // Auto-scrape on mount if URL provided (skip if extension already sent data)
   useEffect(() => {
-    if (sharedUrl) {
+    if (sharedUrl && !fromExtension) {
       scrapeUrl(sharedUrl);
     }
-  }, [sharedUrl, scrapeUrl]);
+  }, [sharedUrl, scrapeUrl, fromExtension]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const dataUri = reader.result as string;
+        const res = await fetch("/api/images/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl: dataUri }),
+        });
+        if (res.ok) {
+          const { cdnUrl } = await res.json();
+          setImageUrl(cdnUrl);
+          setImages((prev) => [cdnUrl, ...prev]);
+          toast.success("Image uploaded!");
+        } else {
+          toast.error("Failed to upload image");
+        }
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch {
+      toast.error("Failed to upload image");
+      setUploading(false);
+    }
+  };
+
+  const handleCreateCollection = async () => {
+    const name = collectionQuery.trim();
+    if (!name) return;
+    setCreatingCollection(true);
+    try {
+      const res = await fetch("/api/collections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, isPublic: newCollectionPublic }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        setCollections((prev) => [...prev, created]);
+        setSelectedCollectionId(created.id);
+        setCollectionQuery("");
+        setCollectionOpen(false);
+        toast.success(`Collection "${name}" created!`);
+      } else {
+        toast.error("Failed to create collection");
+      }
+    } catch {
+      toast.error("Failed to create collection");
+    }
+    setCreatingCollection(false);
+  };
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (collectionRef.current && !collectionRef.current.contains(e.target as Node)) {
+        setCollectionOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,7 +277,6 @@ export default function AddPage() {
       body: JSON.stringify({
         title,
         url: url || null,
-        description: description || null,
         imageUrl: imageUrl || null,
         price: price || null,
         collectionId: selectedCollectionId,
@@ -198,6 +284,10 @@ export default function AddPage() {
     });
 
     if (res.ok) {
+      if (fromExtension) {
+        window.close();
+        return;
+      }
       toast.success("Wish added!");
       const collection = collections.find((c) => c.id === selectedCollectionId);
       router.push(collection ? `/collection/${collection.slug}` : "/dashboard");
@@ -238,6 +328,15 @@ export default function AddPage() {
           </p>
         </div>
 
+        {!fromExtension && (
+          <div className="flex items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 px-4 py-3 mb-6">
+            <Puzzle className="h-4 w-4 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">Tip:</span> Install our Chrome extension to add wishes directly from any store — images and prices are captured automatically.
+            </p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -268,41 +367,57 @@ export default function AddPage() {
               </div>
             </div>
 
-            {/* Image picker */}
-            {images.length > 0 && (
-              <div className="space-y-1.5">
-                <Label>Select an image</Label>
-                <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto rounded-md border p-2">
-                  {images.map((img) => (
-                    <button
-                      key={img}
-                      type="button"
-                      onClick={() => setImageUrl(img)}
-                      className={cn(
-                        "relative aspect-square rounded-md overflow-hidden border-2 transition-all hover:opacity-90",
-                        imageUrl === img
-                          ? "border-primary ring-2 ring-primary/30"
-                          : "border-transparent"
-                      )}
-                    >
-                      <img
-                        src={img}
-                        alt=""
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.currentTarget.parentElement as HTMLElement).style.display = "none";
-                        }}
-                      />
-                      {imageUrl === img && (
-                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                          <Check className="h-5 w-5 text-primary" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
+            {/* Image */}
+            <div className="space-y-1.5">
+              <Label>Image</Label>
+              <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto rounded-md border p-2">
+                {images.map((img) => (
+                  <button
+                    key={img}
+                    type="button"
+                    onClick={() => setImageUrl(img)}
+                    className={cn(
+                      "relative aspect-square rounded-md overflow-hidden border-2 transition-all hover:opacity-90",
+                      imageUrl === img
+                        ? "border-primary ring-2 ring-primary/30"
+                        : "border-transparent"
+                    )}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.currentTarget.parentElement as HTMLElement).style.display = "none";
+                      }}
+                    />
+                    {imageUrl === img && (
+                      <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                        <Check className="h-5 w-5 text-primary" />
+                      </div>
+                    )}
+                  </button>
+                ))}
+                <label
+                  className={cn(
+                    "relative aspect-square rounded-md overflow-hidden border-2 border-dashed border-border transition-all hover:border-primary/50 cursor-pointer flex items-center justify-center",
+                    uploading && "pointer-events-none opacity-60"
+                  )}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  {uploading ? (
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  ) : (
+                    <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </label>
               </div>
-            )}
+            </div>
 
             {/* Title */}
             <div className="space-y-1.5">
@@ -313,18 +428,6 @@ export default function AddPage() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What do you wish for?"
                 required
-              />
-            </div>
-
-            {/* Description */}
-            <div className="space-y-1.5">
-              <Label htmlFor="add-description">Description (optional)</Label>
-              <Textarea
-                id="add-description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Color, size, or any details..."
-                rows={2}
               />
             </div>
 
@@ -344,19 +447,97 @@ export default function AddPage() {
             {/* Collection selector */}
             <div className="space-y-1.5">
               <Label htmlFor="collection">Collection</Label>
-              <select
-                id="collection"
-                value={selectedCollectionId}
-                onChange={(e) => setSelectedCollectionId(e.target.value)}
-                className="flex h-9 w-full appearance-none rounded-md border border-input bg-transparent pl-3 pr-10 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-[length:16px_16px] bg-[right_0.75rem_center] bg-no-repeat"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")` }}
-              >
-                {collections.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <div ref={collectionRef} className="relative">
+                <Input
+                  id="collection"
+                  value={collectionOpen ? collectionQuery : (selectedCollection?.name || "")}
+                  onChange={(e) => {
+                    setCollectionQuery(e.target.value);
+                    setCollectionOpen(true);
+                  }}
+                  onFocus={() => {
+                    setCollectionQuery("");
+                    setCollectionOpen(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && collectionOpen) {
+                      e.preventDefault();
+                      if (filteredCollections.length === 1) {
+                        setSelectedCollectionId(filteredCollections[0].id);
+                        setCollectionQuery("");
+                        setCollectionOpen(false);
+                      } else if (collectionQuery.trim() && !exactMatch) {
+                        handleCreateCollection();
+                      }
+                    }
+                    if (e.key === "Escape") {
+                      setCollectionOpen(false);
+                    }
+                  }}
+                  placeholder="Search or create..."
+                  autoComplete="off"
+                />
+                {collectionOpen && (
+                  <div className="absolute z-10 mt-1 w-full rounded-md border border-border bg-popover shadow-md max-h-48 overflow-y-auto">
+                    {filteredCollections.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={cn(
+                          "flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors text-left",
+                          c.id === selectedCollectionId && "bg-accent"
+                        )}
+                        onClick={() => {
+                          setSelectedCollectionId(c.id);
+                          setCollectionQuery("");
+                          setCollectionOpen(false);
+                        }}
+                      >
+                        {c.id === selectedCollectionId && <Check className="h-3.5 w-3.5 shrink-0" />}
+                        <span className={c.id === selectedCollectionId ? "" : "pl-5.5"}>{c.name}</span>
+                      </button>
+                    ))}
+                    {collectionQuery.trim() && !exactMatch && (
+                      <div className="border-t border-border px-3 py-2 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            className="flex flex-1 items-center gap-2 text-sm hover:text-foreground transition-colors text-left text-muted-foreground"
+                            onClick={handleCreateCollection}
+                            disabled={creatingCollection}
+                          >
+                            {creatingCollection ? (
+                              <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+                            ) : (
+                              <Plus className="h-3.5 w-3.5 shrink-0" />
+                            )}
+                            Create &ldquo;{collectionQuery.trim()}&rdquo;
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setNewCollectionPublic(!newCollectionPublic)}
+                            className={cn(
+                              "flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-colors border",
+                              newCollectionPublic
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-muted text-muted-foreground border-border"
+                            )}
+                          >
+                            {newCollectionPublic ? (
+                              <><Globe className="h-3 w-3" /> Public</>
+                            ) : (
+                              <><Lock className="h-3 w-3" /> Private</>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {filteredCollections.length === 0 && !collectionQuery.trim() && (
+                      <p className="px-3 py-2 text-sm text-muted-foreground">No collections</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={saving || scraping}>
