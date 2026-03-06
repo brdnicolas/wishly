@@ -27,9 +27,9 @@ interface Profile {
 }
 
 const themes = [
-  { key: "light", label: "Light", icon: Sun },
-  { key: "dark", label: "Dark", icon: Moon },
-  { key: "system", label: "System", icon: Monitor },
+  { key: "light", label: "Clair", icon: Sun },
+  { key: "dark", label: "Sombre", icon: Moon },
+  { key: "system", label: "Système", icon: Monitor },
 ] as const;
 
 export default function SettingsPage() {
@@ -65,11 +65,11 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+      toast.error("Veuillez sélectionner une image");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5MB");
+      toast.error("L'image doit faire moins de 5 Mo");
       return;
     }
     setUploadingImage(true);
@@ -84,9 +84,9 @@ export default function SettingsPage() {
         const data = await res.json();
         if (res.ok && data.cdnUrl) {
           setImage(data.cdnUrl);
-          toast.success("Image uploaded");
+          toast.success("Image téléchargée");
         } else {
-          toast.error("Upload failed");
+          toast.error("Échec du téléchargement");
         }
       } catch {
         toast.error("Upload failed");
@@ -139,10 +139,10 @@ export default function SettingsPage() {
       const updated = await res.json();
       setProfile(updated);
       setSlugAvailable(null);
-      toast.success("Profile updated");
+      toast.success("Profil mis à jour");
     } else {
       const data = await res.json().catch(() => null);
-      toast.error(data?.error || "Failed to update profile");
+      toast.error(data?.error || "Échec de la mise à jour du profil");
     }
     setSaving(false);
   };
@@ -183,11 +183,11 @@ export default function SettingsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
-        <h1 className="text-2xl font-semibold mb-8">Settings</h1>
+        <h1 className="text-2xl font-semibold mb-8">Paramètres</h1>
 
         {/* Profile section */}
         <section>
-          <h2 className="text-lg font-medium mb-4">Profile</h2>
+          <h2 className="text-lg font-medium mb-4">Profil</h2>
           <div className="space-y-4">
             {/* Avatar + info */}
             <div className="flex items-center gap-4">
@@ -221,7 +221,7 @@ export default function SettingsPage() {
                 />
               </button>
               <div className="flex-1 min-w-0">
-                <p className="font-medium">{name || "Anonymous"}</p>
+                <p className="font-medium">{name || "Anonyme"}</p>
                 <p className="text-sm text-muted-foreground">{profile.email}</p>
                 {image && (
                   <button
@@ -229,7 +229,7 @@ export default function SettingsPage() {
                     onClick={() => setImage("")}
                     className="text-xs text-destructive hover:underline mt-0.5"
                   >
-                    Remove photo
+                    Supprimer la photo
                   </button>
                 )}
               </div>
@@ -237,18 +237,18 @@ export default function SettingsPage() {
 
             {/* Name */}
             <div className="space-y-1.5">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Nom</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder="Votre nom"
               />
             </div>
 
             {/* Username */}
             <div className="space-y-1.5">
-              <Label htmlFor="slug">Username</Label>
+              <Label htmlFor="slug">Pseudo</Label>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm text-muted-foreground whitespace-nowrap">envly.app/u/</span>
                 <div className="relative flex-1">
@@ -283,10 +283,10 @@ export default function SettingsPage() {
                 </div>
               </div>
               {slugChanged && slug.length >= 3 && slugAvailable === false && (
-                <p className="text-[11px] text-destructive">This username is already taken</p>
+                <p className="text-[11px] text-destructive">Ce pseudo est déjà pris</p>
               )}
               {slugChanged && slug.length > 0 && slug.length < 3 && (
-                <p className="text-[11px] text-muted-foreground">Username must be at least 3 characters</p>
+                <p className="text-[11px] text-muted-foreground">Le pseudo doit faire au moins 3 caractères</p>
               )}
             </div>
 
@@ -297,13 +297,13 @@ export default function SettingsPage() {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="A short bio about you..."
+                placeholder="Une courte bio..."
                 rows={3}
               />
             </div>
 
             <Button className="rounded-xl" onClick={handleSave} disabled={saving || !hasChanges || slugInvalid}>
-              {saving ? "Saving..." : "Save changes"}
+              {saving ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </div>
         </section>
@@ -312,7 +312,7 @@ export default function SettingsPage() {
 
         {/* Appearance section */}
         <section>
-          <h2 className="text-lg font-medium mb-4">Appearance</h2>
+          <h2 className="text-lg font-medium mb-4">Apparence</h2>
           <div className="flex gap-2">
             {themes.map(({ key, label, icon: Icon }) => (
               <button
@@ -336,48 +336,48 @@ export default function SettingsPage() {
 
         {/* Danger zone */}
         <section>
-          <h2 className="text-lg font-medium mb-4 text-destructive">Danger zone</h2>
+          <h2 className="text-lg font-medium mb-4 text-destructive">Zone de danger</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Permanently delete your account and all your data. This action cannot be undone.
+            Supprimez définitivement votre compte et toutes vos données. Cette action est irréversible.
           </p>
           <Dialog open={deleteDialogOpen} onOpenChange={(open) => { setDeleteDialogOpen(open); if (!open) setDeleteConfirm(""); }}>
             <DialogTrigger asChild>
-              <Button variant="destructive" className="rounded-xl">Delete my account</Button>
+              <Button variant="destructive" className="rounded-xl">Supprimer mon compte</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Delete account</DialogTitle>
+                <DialogTitle>Supprimer le compte</DialogTitle>
                 <DialogDescription>
-                  This will permanently delete your account, collections, wishes, and all associated data. This action cannot be undone.
+                  Cela supprimera définitivement votre compte, vos collections, vos souhaits et toutes les données associées. Cette action est irréversible.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-2">
                 <Label htmlFor="delete-confirm">
-                  Type <strong>DELETE</strong> to confirm
+                  Tapez <strong>SUPPRIMER</strong> pour confirmer
                 </Label>
                 <Input
                   id="delete-confirm"
                   value={deleteConfirm}
                   onChange={(e) => setDeleteConfirm(e.target.value)}
-                  placeholder="DELETE"
+                  placeholder="SUPPRIMER"
                 />
               </div>
               <DialogFooter>
                 <Button
                   variant="destructive"
-                  disabled={deleteConfirm !== "DELETE" || deleting}
+                  disabled={deleteConfirm !== "SUPPRIMER" || deleting}
                   onClick={async () => {
                     setDeleting(true);
                     const res = await fetch("/api/account/delete", { method: "DELETE" });
                     if (res.ok) {
                       signOut({ callbackUrl: "/" });
                     } else {
-                      toast.error("Failed to delete account");
+                      toast.error("Échec de la suppression du compte");
                       setDeleting(false);
                     }
                   }}
                 >
-                  {deleting ? "Deleting..." : "Delete my account"}
+                  {deleting ? "Suppression..." : "Supprimer mon compte"}
                 </Button>
               </DialogFooter>
             </DialogContent>

@@ -82,7 +82,7 @@ export function CollectionCard({
   onDeleted: (id: string) => void;
 }) {
   const handleDelete = async () => {
-    if (!confirm("Delete this collection and all its wishes?")) return;
+    if (!confirm("Supprimer cette collection et tous ses souhaits ?")) return;
 
     const res = await fetch(`/api/collections/${collection.id}`, {
       method: "DELETE",
@@ -90,7 +90,7 @@ export function CollectionCard({
 
     if (res.ok) {
       onDeleted(collection.id);
-      toast.success("Collection deleted");
+      toast.success("Collection supprimée");
     }
   };
 
@@ -98,7 +98,7 @@ export function CollectionCard({
     navigator.clipboard.writeText(
       `${window.location.origin}/w/${collection.slug}`
     );
-    toast.success("Share link copied!");
+    toast.success("Lien copié !");
   };
 
   const images = (collection.wishes || [])
@@ -124,7 +124,7 @@ export function CollectionCard({
               size="icon"
               className="h-7 w-7 shrink-0 -mt-0.5 rounded-xl"
               onClick={copyShareLink}
-              title="Copy share link"
+              title="Copier le lien"
             >
               <Share2 className="h-3.5 w-3.5" />
             </Button>
@@ -139,12 +139,12 @@ export function CollectionCard({
               {collection.isPublic && (
                 <DropdownMenuItem onClick={copyShareLink}>
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Copy share link
+                  Copier le lien
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={handleDelete} className="text-destructive">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -158,13 +158,13 @@ export function CollectionCard({
 
         <div className="flex items-center gap-2 mt-2.5">
           <span className="text-xs text-muted-foreground">
-            {collection._count.wishes} wish{collection._count.wishes !== 1 ? "es" : ""}
+            {collection._count.wishes} souhait{collection._count.wishes !== 1 ? "s" : ""}
           </span>
           <Badge
             variant={collection.isPublic ? "default" : "secondary"}
             className="text-[10px] px-2 py-0.5 rounded-lg"
           >
-            {collection.isPublic ? "Public" : "Private"}
+            {collection.isPublic ? "Publique" : "Privée"}
           </Badge>
         </div>
       </div>

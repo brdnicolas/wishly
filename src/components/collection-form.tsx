@@ -72,9 +72,9 @@ export function CollectionForm({
       }
       onSuccess();
       onOpenChange(false);
-      toast.success(isEdit ? "Collection updated!" : "Collection created!");
+      toast.success(isEdit ? "Collection mise à jour !" : "Collection créée !");
     } else {
-      toast.error(isEdit ? "Failed to update collection" : "Failed to create collection");
+      toast.error(isEdit ? "Échec de la mise à jour" : "Échec de la création");
     }
 
     setLoading(false);
@@ -84,31 +84,31 @@ export function CollectionForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Collection" : "New Collection"}</DialogTitle>
+          <DialogTitle>{isEdit ? "Modifier la collection" : "Nouvelle collection"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="col-name">Name</Label>
+            <Label htmlFor="col-name">Nom</Label>
             <Input
               id="col-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Birthday wishlist"
+              placeholder="Liste d'anniversaire"
               required
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="col-description">Description (optional)</Label>
+            <Label htmlFor="col-description">Description (optionnelle)</Label>
             <Textarea
               id="col-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Things I'd love for my birthday"
+              placeholder="Ce qui me ferait plaisir pour mon anniversaire"
               rows={3}
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Visibility</Label>
+            <Label>Visibilité</Label>
             <button
               type="button"
               onClick={() => setIsPublic(!isPublic)}
@@ -124,17 +124,17 @@ export function CollectionForm({
               ) : (
                 <Lock className="h-4 w-4" />
               )}
-              <span className="font-medium">{isPublic ? "Public" : "Private"}</span>
+              <span className="font-medium">{isPublic ? "Publique" : "Privée"}</span>
               <span className="text-xs ml-auto">
-                {isPublic ? "Anyone with the link can see it" : "Only you can see it"}
+                {isPublic ? "Visible par tous avec le lien" : "Visible uniquement par vous"}
               </span>
             </button>
           </div>
 
           <Button type="submit" className="w-full rounded-xl" disabled={loading}>
             {loading
-              ? isEdit ? "Saving..." : "Creating..."
-              : isEdit ? "Save changes" : "Create collection"
+              ? isEdit ? "Enregistrement..." : "Création..."
+              : isEdit ? "Enregistrer" : "Créer la collection"
             }
           </Button>
         </form>

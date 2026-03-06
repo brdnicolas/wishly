@@ -28,14 +28,14 @@ export async function generateMetadata({
   if (!collection) return {};
 
   const ogImage = collection.wishes[0]?.imageUrl;
-  const ownerName = collection.user.name || "Someone";
+  const ownerName = collection.user.name || "Quelqu'un";
 
   return {
     title: `${collection.name} - Envly`,
-    description: collection.description || `Wishlist by ${ownerName}`,
+    description: collection.description || `Wishlist de ${ownerName}`,
     openGraph: {
       title: collection.name,
-      description: collection.description || `Wishlist by ${ownerName}`,
+      description: collection.description || `Wishlist de ${ownerName}`,
       ...(ogImage ? { images: [{ url: ogImage }] } : {}),
     },
   };

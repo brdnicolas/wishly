@@ -27,8 +27,8 @@ export function FollowedBy({ followers, totalCount }: FollowedByProps) {
         ))}
       </div>
       <span className="text-xs text-muted-foreground">
-        Followed by {followers[0]?.name || "someone"}
-        {remaining > 0 && ` and ${remaining} other${remaining !== 1 ? "s" : ""}`}
+        Suivi par {followers[0]?.name || "quelqu'un"}
+        {remaining > 0 && ` et ${remaining} autre${remaining !== 1 ? "s" : ""}`}
       </span>
     </div>
   );

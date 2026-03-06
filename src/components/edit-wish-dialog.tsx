@@ -68,9 +68,9 @@ export function EditWishDialog({
     if (res.ok) {
       onUpdated();
       onOpenChange(false);
-      toast.success("Wish updated!");
+      toast.success("Souhait mis à jour !");
     } else {
-      toast.error("Failed to update wish");
+      toast.error("Échec de la mise à jour");
     }
 
     setSaving(false);
@@ -80,11 +80,11 @@ export function EditWishDialog({
     <Dialog open={!!wish} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit wish</DialogTitle>
+          <DialogTitle>Modifier le souhait</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="edit-url">URL (optional)</Label>
+            <Label htmlFor="edit-url">URL (optionnel)</Label>
             <Input
               id="edit-url"
               value={url}
@@ -94,30 +94,30 @@ export function EditWishDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="edit-title">Title</Label>
+            <Label htmlFor="edit-title">Titre</Label>
             <Input
               id="edit-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="What do you wish for?"
+              placeholder="Que souhaitez-vous ?"
               required
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="edit-description">Description (optional)</Label>
+            <Label htmlFor="edit-description">Description (optionnelle)</Label>
             <Textarea
               id="edit-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Color, size, or any details..."
+              placeholder="Couleur, taille ou autres détails..."
               rows={2}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="edit-price">Price (optional)</Label>
+              <Label htmlFor="edit-price">Prix (optionnel)</Label>
               <Input
                 id="edit-price"
                 value={price}
@@ -128,7 +128,7 @@ export function EditWishDialog({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-imageUrl">Image URL (optional)</Label>
+              <Label htmlFor="edit-imageUrl">URL image (optionnel)</Label>
               <Input
                 id="edit-imageUrl"
                 value={imageUrl}
@@ -148,7 +148,7 @@ export function EditWishDialog({
           )}
 
           <Button type="submit" className="w-full rounded-xl" disabled={saving}>
-            {saving ? "Saving..." : "Save changes"}
+            {saving ? "Enregistrement..." : "Enregistrer"}
           </Button>
         </form>
       </DialogContent>

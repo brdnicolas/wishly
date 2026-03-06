@@ -29,11 +29,11 @@ export function UserCard({ user }: UserCardProps) {
               href={`/u/${user.slug}`}
               className="font-medium text-sm hover:underline underline-offset-4 truncate block"
             >
-              {user.name || "Anonymous"}
+              {user.name || "Anonyme"}
             </Link>
           ) : (
             <span className="font-medium text-sm truncate block">
-              {user.name || "Anonymous"}
+              {user.name || "Anonyme"}
             </span>
           )}
         </div>

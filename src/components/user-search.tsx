@@ -51,7 +51,7 @@ export function UserSearch() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search users by name or email..."
+          placeholder="Rechercher par nom ou e-mail..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="pl-9"
@@ -59,12 +59,12 @@ export function UserSearch() {
       </div>
       {loading && (
         <p className="text-sm text-muted-foreground text-center py-2">
-          Searching...
+          Recherche...
         </p>
       )}
       {!loading && query.trim().length >= 2 && results.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-2">
-          No users found
+          Aucun utilisateur trouvé
         </p>
       )}
       {results.length > 0 && (

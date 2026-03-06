@@ -16,16 +16,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || "https://envly.app"),
-  title: "Envly — Your wishlists, beautifully shared",
-  description: "Create stunning wishlists, share them with anyone, and let your loved ones reserve gifts anonymously. No more duplicate gifts, no more ruined surprises.",
+  title: "Envly — Vos wishlists, magnifiquement partagées",
+  description: "Créez de superbes wishlists, partagez-les avec vos proches et laissez-les réserver des cadeaux anonymement. Fini les doublons, fini les surprises gâchées.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.svg",
     apple: "/icon-192.png",
   },
   openGraph: {
-    title: "Envly — Your wishlists, beautifully shared",
-    description: "Create stunning wishlists, share them with anyone, and let your loved ones reserve gifts anonymously. No more duplicate gifts, no more ruined surprises.",
+    title: "Envly — Vos wishlists, magnifiquement partagées",
+    description: "Créez de superbes wishlists, partagez-les avec vos proches et laissez-les réserver des cadeaux anonymement. Fini les doublons, fini les surprises gâchées.",
     type: "website",
     siteName: "Envly",
   },
@@ -48,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

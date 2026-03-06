@@ -87,7 +87,7 @@ function HeaderSearch() {
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             autoFocus
-            placeholder="Search users..."
+            placeholder="Rechercher..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-8 w-48 pl-8 text-sm rounded-xl"
@@ -110,10 +110,10 @@ function HeaderSearch() {
       {(results.length > 0 || loading || (query.trim().length >= 2 && !loading)) && (
         <div className="absolute right-0 top-full mt-2 w-72 bg-popover/95 backdrop-blur-xl border border-border/60 rounded-2xl shadow-xl z-50 overflow-hidden">
           {loading && (
-            <p className="text-xs text-muted-foreground p-3">Searching...</p>
+            <p className="text-xs text-muted-foreground p-3">Recherche...</p>
           )}
           {!loading && query.trim().length >= 2 && results.length === 0 && (
-            <p className="text-xs text-muted-foreground p-3">No users found</p>
+            <p className="text-xs text-muted-foreground p-3">Aucun utilisateur trouvé</p>
           )}
           {results.map((user) => (
             <Link
@@ -129,7 +129,7 @@ function HeaderSearch() {
                 </AvatarFallback>
               </Avatar>
               <span className="text-sm truncate">
-                {user.name || "Anonymous"}
+                {user.name || "Anonyme"}
               </span>
             </Link>
           ))}
@@ -178,19 +178,19 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="flex items-center gap-2">
                       <LayoutGrid className="h-4 w-4" />
-                      My Collections
+                      Mes collections
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center gap-2">
                       <Settings className="h-4 w-4" />
-                      Settings
+                      Paramètres
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-2">
                     <LogOut className="h-4 w-4" />
-                    Sign out
+                    Déconnexion
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -198,10 +198,10 @@ export function Header() {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/signin">Sign in</Link>
+                <Link href="/signin">Connexion</Link>
               </Button>
               <Button size="sm" className="rounded-xl" asChild>
-                <Link href="/signup">Sign up</Link>
+                <Link href="/signup">S&apos;inscrire</Link>
               </Button>
             </div>
           )}

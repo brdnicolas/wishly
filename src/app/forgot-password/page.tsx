@@ -31,11 +31,11 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-sm rounded-2xl border-border/60 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Reset password</CardTitle>
+          <CardTitle className="text-xl">Réinitialiser le mot de passe</CardTitle>
           <CardDescription>
             {sent
-              ? "Check your email for a reset link"
-              : "Enter your email to receive a reset link"}
+              ? "Vérifiez votre boîte mail"
+              : "Entrez votre e-mail pour recevoir un lien de réinitialisation"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -45,13 +45,13 @@ export default function ForgotPasswordPage() {
                 <Mail className="h-6 w-6 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground text-center">
-                If an account exists for <strong>{email}</strong>, we sent a password reset link.
+                Si un compte existe pour <strong>{email}</strong>, nous avons envoyé un lien de réinitialisation.
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E-mail</Label>
                 <Input
                   id="email"
                   type="email"
@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
                 />
               </div>
               <Button type="submit" className="w-full rounded-xl" disabled={loading}>
-                {loading ? "Sending..." : "Send reset link"}
+                {loading ? "Envoi..." : "Envoyer le lien"}
               </Button>
             </form>
           )}
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
               className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Back to sign in
+              Retour à la connexion
             </Link>
           </div>
         </CardContent>

@@ -30,8 +30,8 @@ interface CollectionItem {
 }
 
 const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
-  { key: "following", label: "Following", icon: <UserCheck className="h-4 w-4" /> },
-  { key: "followers", label: "Followers", icon: <Users className="h-4 w-4" /> },
+  { key: "following", label: "Abonnements", icon: <UserCheck className="h-4 w-4" /> },
+  { key: "followers", label: "Abonnés", icon: <Users className="h-4 w-4" /> },
   { key: "collections", label: "Collections", icon: <Heart className="h-4 w-4" /> },
 ];
 
@@ -59,7 +59,7 @@ export default function FriendsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
-        <h1 className="text-2xl font-semibold mb-6">Friends</h1>
+        <h1 className="text-2xl font-semibold mb-6">Amis</h1>
 
         <UserSearch />
 
@@ -100,7 +100,7 @@ export default function FriendsPage() {
                 <Heart className="h-5 w-5 text-muted-foreground/50" />
               </div>
               <p className="text-sm text-muted-foreground">
-                No followed collections yet
+                Aucune collection suivie
               </p>
             </div>
           ) : (
@@ -115,12 +115,12 @@ export default function FriendsPage() {
                     <p className="font-medium text-sm truncate">{col.name}</p>
                     {col.ownerName && (
                       <p className="text-xs text-muted-foreground">
-                        by {col.ownerName}
+                        par {col.ownerName}
                       </p>
                     )}
                   </div>
                   <span className="text-xs text-muted-foreground shrink-0 ml-3">
-                    {col.wishCount} wish{col.wishCount !== 1 ? "es" : ""}
+                    {col.wishCount} souhait{col.wishCount !== 1 ? "s" : ""}
                   </span>
                 </Link>
               ))}
@@ -133,8 +133,8 @@ export default function FriendsPage() {
             </div>
             <p className="text-sm text-muted-foreground">
               {activeTab === "following"
-                ? "You're not following anyone yet"
-                : "No followers yet"}
+                ? "Vous ne suivez personne pour le moment"
+                : "Pas encore d'abonnés"}
             </p>
           </div>
         ) : (

@@ -21,8 +21,8 @@ function ResetPasswordForm() {
     return (
       <Card className="w-full max-w-sm rounded-2xl border-border/60 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Invalid link</CardTitle>
-          <CardDescription>This password reset link is invalid or has expired.</CardDescription>
+          <CardTitle className="text-xl">Lien invalide</CardTitle>
+          <CardDescription>Ce lien de réinitialisation est invalide ou a expiré.</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -33,12 +33,12 @@ function ResetPasswordForm() {
     setError("");
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError("Le mot de passe doit faire au moins 6 caractères");
       return;
     }
 
     if (password !== confirm) {
-      setError("Passwords don't match");
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
@@ -54,7 +54,7 @@ function ResetPasswordForm() {
       router.push("/signin");
     } else {
       const data = await res.json().catch(() => null);
-      setError(data?.error || "Something went wrong");
+      setError(data?.error || "Une erreur est survenue");
       setLoading(false);
     }
   };
@@ -62,8 +62,8 @@ function ResetPasswordForm() {
   return (
     <Card className="w-full max-w-sm rounded-2xl border-border/60 shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Set new password</CardTitle>
-        <CardDescription>Enter your new password below</CardDescription>
+        <CardTitle className="text-xl">Nouveau mot de passe</CardTitle>
+        <CardDescription>Entrez votre nouveau mot de passe</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -71,7 +71,7 @@ function ResetPasswordForm() {
             <p className="text-sm text-destructive text-center">{error}</p>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="password">New password</Label>
+            <Label htmlFor="password">Nouveau mot de passe</Label>
             <Input
               id="password"
               type="password"
@@ -82,7 +82,7 @@ function ResetPasswordForm() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="confirm">Confirm password</Label>
+            <Label htmlFor="confirm">Confirmer le mot de passe</Label>
             <Input
               id="confirm"
               type="password"
@@ -93,7 +93,7 @@ function ResetPasswordForm() {
             />
           </div>
           <Button type="submit" className="w-full rounded-xl" disabled={loading}>
-            {loading ? "Resetting..." : "Reset password"}
+            {loading ? "Réinitialisation..." : "Réinitialiser"}
           </Button>
         </form>
       </CardContent>

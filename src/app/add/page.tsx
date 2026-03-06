@@ -43,7 +43,7 @@ function WishPreview({
       <div className="rounded-2xl border border-dashed border-border/60 bg-muted/10 flex flex-col items-center justify-center p-8 text-center min-h-[280px]">
         <Gift className="h-10 w-10 text-muted-foreground/20 mb-3" />
         <p className="text-sm text-muted-foreground/60">
-          Your wish will appear here...
+          Votre souhait apparaîtra ici...
         </p>
       </div>
     );
@@ -72,7 +72,7 @@ function WishPreview({
       {/* Info */}
       <div className="p-2 flex flex-col gap-0.5 flex-1">
         <h3 className="text-xs font-medium leading-tight line-clamp-2">
-          {title || "Untitled wish"}
+          {title || "Souhait sans titre"}
         </h3>
         <div className="flex items-center justify-between mt-auto pt-0.5">
           {domain && (
@@ -157,7 +157,7 @@ function AddPageContent() {
           setSelectedCollectionId(data[0].id);
         }
       })
-      .catch(() => toast.error("Failed to load collections"))
+      .catch(() => toast.error("Échec du chargement des collections"))
       .finally(() => setLoadingCollections(false));
   }, []);
 
@@ -189,13 +189,13 @@ function AddPageContent() {
         if (imgList.length) setImages(imgList);
         if (bestImage) setImageUrl(bestImage);
         if (data.price) setPrice(String(data.price));
-        toast.success("Page info loaded!");
+        toast.success("Informations chargées !");
       } else {
         const data = await res.json().catch(() => null);
-        toast.error(data?.error || "Could not scrape this URL");
+        toast.error(data?.error || "Impossible de récupérer les infos de cette URL");
       }
     } catch {
-      toast.error("Failed to fetch URL");
+      toast.error("Échec du chargement de l'URL");
     }
     setScraping(false);
   }, []);
@@ -224,9 +224,9 @@ function AddPageContent() {
           const { cdnUrl } = await res.json();
           setImageUrl(cdnUrl);
           setImages((prev) => [cdnUrl, ...prev]);
-          toast.success("Image uploaded!");
+          toast.success("Image téléchargée !");
         } else {
-          toast.error("Failed to upload image");
+          toast.error("Échec du téléchargement de l'image");
         }
         setUploading(false);
       };
@@ -253,9 +253,9 @@ function AddPageContent() {
         setSelectedCollectionId(created.id);
         setCollectionQuery("");
         setCollectionOpen(false);
-        toast.success(`Collection "${name}" created!`);
+        toast.success(`Collection « ${name} » créée !`);
       } else {
-        toast.error("Failed to create collection");
+        toast.error("Échec de la création de la collection");
       }
     } catch {
       toast.error("Failed to create collection");
@@ -278,7 +278,7 @@ function AddPageContent() {
     e.preventDefault();
 
     if (!selectedCollectionId) {
-      toast.error("Please select a collection");
+      toast.error("Veuillez sélectionner une collection");
       return;
     }
 
@@ -300,11 +300,11 @@ function AddPageContent() {
         window.close();
         return;
       }
-      toast.success("Wish added!");
+      toast.success("Souhait ajouté !");
       const collection = collections.find((c) => c.id === selectedCollectionId);
       router.push(collection ? `/collection/${collection.slug}` : "/dashboard");
     } else {
-      toast.error("Failed to add wish");
+      toast.error("Échec de l'ajout du souhait");
     }
     setSaving(false);
   };
@@ -321,10 +321,10 @@ function AddPageContent() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
         <p className="text-muted-foreground text-center">
-          You need at least one collection to add a wish.
+          Vous devez avoir au moins une collection pour ajouter un souhait.
         </p>
         <Button onClick={() => router.push("/dashboard")}>
-          Go to Dashboard
+          Aller au tableau de bord
         </Button>
       </div>
     );
@@ -334,9 +334,9 @@ function AddPageContent() {
     <div className="min-h-screen px-4 py-12">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Add a wish</h1>
+          <h1 className="text-2xl font-bold">Ajouter un souhait</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Save this item to one of your collections.
+            Enregistrez cet article dans l&apos;une de vos collections.
           </p>
         </div>
 
@@ -346,7 +346,7 @@ function AddPageContent() {
               <Puzzle className="h-4 w-4 text-muted-foreground" />
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">Tip:</span> Install our Chrome extension to add wishes directly from any store.
+              <span className="font-medium text-foreground">Astuce :</span> Installez notre extension Chrome pour ajouter des souhaits directement depuis n&apos;importe quel site.
             </p>
           </div>
         )}
@@ -435,19 +435,19 @@ function AddPageContent() {
 
             {/* Title */}
             <div className="space-y-1.5">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">Titre</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="What do you wish for?"
+                placeholder="Que souhaitez-vous ?"
                 required
               />
             </div>
 
             {/* Price */}
             <div className="space-y-1.5">
-              <Label htmlFor="price">Price (optional)</Label>
+              <Label htmlFor="price">Prix (optionnel)</Label>
               <Input
                 id="price"
                 value={price}
@@ -488,7 +488,7 @@ function AddPageContent() {
                       setCollectionOpen(false);
                     }
                   }}
-                  placeholder="Search or create..."
+                  placeholder="Rechercher ou créer..."
                   autoComplete="off"
                 />
                 {collectionOpen && (
@@ -525,7 +525,7 @@ function AddPageContent() {
                             ) : (
                               <Plus className="h-3.5 w-3.5 shrink-0" />
                             )}
-                            Create &ldquo;{collectionQuery.trim()}&rdquo;
+                            Créer &laquo; {collectionQuery.trim()} &raquo;
                           </button>
                           <button
                             type="button"
@@ -547,7 +547,7 @@ function AddPageContent() {
                       </div>
                     )}
                     {filteredCollections.length === 0 && !collectionQuery.trim() && (
-                      <p className="px-3 py-2 text-sm text-muted-foreground">No collections</p>
+                      <p className="px-3 py-2 text-sm text-muted-foreground">Aucune collection</p>
                     )}
                   </div>
                 )}
@@ -555,13 +555,13 @@ function AddPageContent() {
             </div>
 
             <Button type="submit" className="w-full rounded-xl" disabled={saving || scraping}>
-              {saving ? "Adding..." : "Add wish"}
+              {saving ? "Ajout..." : "Ajouter le souhait"}
             </Button>
           </form>
 
           {/* Live Preview */}
           <div className="lg:sticky lg:top-20">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Preview</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">Aperçu</p>
             <div className="w-full max-w-[220px] mx-auto lg:max-w-none">
               <WishPreview
                 title={title}

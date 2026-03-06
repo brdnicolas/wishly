@@ -29,7 +29,7 @@ export default function SignInPage() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError("Email ou mot de passe incorrect");
       setLoading(false);
     } else {
       router.push("/dashboard");
@@ -40,8 +40,8 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-sm rounded-2xl border-border/60 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Sign in to Envly</CardTitle>
-          <CardDescription>Choose your preferred sign in method</CardDescription>
+          <CardTitle className="text-xl">Se connecter à Envly</CardTitle>
+          <CardDescription>Choisissez votre méthode de connexion</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button variant="outline" className="w-full rounded-xl" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
@@ -51,7 +51,7 @@ export default function SignInPage() {
           <div className="relative">
             <Separator />
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-              or
+              ou
             </span>
           </div>
 
@@ -60,7 +60,7 @@ export default function SignInPage() {
               <p className="text-sm text-destructive text-center">{error}</p>
             )}
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -71,7 +71,7 @@ export default function SignInPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Mot de passe</Label>
               <Input
                 id="password"
                 type="password"
@@ -81,19 +81,19 @@ export default function SignInPage() {
               />
             </div>
             <Button type="submit" className="w-full rounded-xl" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Connexion..." : "Se connecter"}
             </Button>
             <div className="text-right">
               <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Forgot password?
+                Mot de passe oublié ?
               </Link>
             </div>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            Pas encore de compte ?{" "}
             <Link href="/signup" className="text-foreground underline underline-offset-4 hover:text-primary">
-              Sign up
+              S&apos;inscrire
             </Link>
           </p>
         </CardContent>

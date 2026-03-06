@@ -68,7 +68,7 @@ function FriendCollectionCard({ col }: { col: FriendCollection }) {
           {col.name}
         </h3>
         <span className="text-xs text-muted-foreground">
-          {col._count.wishes} wish{col._count.wishes !== 1 ? "es" : ""}
+          {col._count.wishes} souhait{col._count.wishes !== 1 ? "s" : ""}
         </span>
       </div>
     </Link>
@@ -111,7 +111,7 @@ function FriendSection({
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">{owner.name || "Anonymous"}</p>
+          <p className="text-sm font-medium truncate">{owner.name || "Anonyme"}</p>
           <p className="text-xs text-muted-foreground">
             {collections.length} collection{collections.length !== 1 ? "s" : ""}
           </p>
@@ -121,7 +121,7 @@ function FriendSection({
             href={`/u/${owner.slug}`}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
-            View profile
+            Voir le profil
           </Link>
         )}
       </div>
@@ -171,8 +171,8 @@ function FriendsTab({
         </div>
         <p className="text-muted-foreground">
           {followingCount === 0
-            ? "Follow users to see their collections here"
-            : "No public collections from your friends yet"}
+            ? "Suivez des utilisateurs pour voir leurs collections ici"
+            : "Pas encore de collections publiques de vos amis"}
         </p>
       </div>
     );
@@ -307,7 +307,7 @@ export default function DashboardPage() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-xl font-semibold">{profile.name || "Anonymous"}</h1>
+              <h1 className="text-xl font-semibold">{profile.name || "Anonyme"}</h1>
               {profile.description && (
                 <p className="text-sm text-muted-foreground mt-0.5">{profile.description}</p>
               )}
@@ -315,12 +315,12 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3 mt-2 justify-center sm:justify-start">
                 <span className="text-sm">
                   <span className="font-medium">{stats.followingCount}</span>{" "}
-                  <span className="text-muted-foreground">following</span>
+                  <span className="text-muted-foreground">abonnements</span>
                 </span>
                 <span className="text-sm">
                   <span className="font-medium">{stats.followersCount}</span>{" "}
                   <span className="text-muted-foreground">
-                    follower{stats.followersCount !== 1 ? "s" : ""}
+                    abonné{stats.followersCount !== 1 ? "s" : ""}
                   </span>
                 </span>
                 <span className="text-muted-foreground text-sm">&middot;</span>
@@ -342,7 +342,7 @@ export default function DashboardPage() {
               ) : (
                 <Link href="/settings" className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
                   <Settings className="h-3.5 w-3.5" />
-                  Set up your username to share your profile
+                  Configurez votre pseudo pour partager votre profil
                 </Link>
               )}
             </div>
@@ -356,9 +356,9 @@ export default function DashboardPage() {
               <Puzzle className="h-5 w-5 text-muted-foreground" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium">Add wishes faster with our Chrome extension</p>
+              <p className="text-sm font-medium">Ajoutez des souhaits plus vite avec notre extension Chrome</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Browse any store and save items to your wishlist in one click.
+                Parcourez n&apos;importe quelle boutique et enregistrez des articles en un clic.
               </p>
             </div>
             <button
@@ -386,7 +386,7 @@ export default function DashboardPage() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              My Collections
+              Mes collections
             </button>
             <button
               onClick={() => setActiveTab("friends")}
@@ -397,13 +397,13 @@ export default function DashboardPage() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Friends
+              Amis
             </button>
           </div>
           {activeTab === "mine" && (
             <Button onClick={() => setShowForm(true)} size="sm" className="rounded-xl">
               <Plus className="h-4 w-4 mr-1" />
-              New
+              Nouveau
             </Button>
           )}
         </div>
@@ -427,10 +427,10 @@ export default function DashboardPage() {
               <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-muted/50 mb-4">
                 <Plus className="h-6 w-6 text-muted-foreground/50" />
               </div>
-              <p className="text-muted-foreground mb-4">No collections yet</p>
+              <p className="text-muted-foreground mb-4">Pas encore de collection</p>
               <Button onClick={() => setShowForm(true)} variant="outline" className="rounded-xl">
                 <Plus className="h-4 w-4 mr-2" />
-                Create your first collection
+                Créer votre première collection
               </Button>
             </div>
           ) : (

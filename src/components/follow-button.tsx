@@ -56,12 +56,12 @@ export function FollowButton({
         {isFollowing ? (
           <>
             <HeartOff className="h-4 w-4 mr-1.5" />
-            Unfollow
+            Ne plus suivre
           </>
         ) : (
           <>
             <Heart className="h-4 w-4 mr-1.5" />
-            Follow
+            Suivre
           </>
         )}
       </Button>
@@ -79,7 +79,7 @@ export function FollowButton({
       {isFollowing ? (
         <>
           <UserCheck className="h-4 w-4 mr-1.5" />
-          Following
+          Suivi
         </>
       ) : (
         <>

@@ -55,20 +55,20 @@ const floatingCards = [
 const steps = [
   {
     number: "01",
-    title: "Create",
-    description: "Add items by URL or manually. We auto-fill product details like magic.",
+    title: "Créez",
+    description: "Ajoutez des articles par URL ou manuellement. On remplit les détails automatiquement.",
     icon: Gift,
   },
   {
     number: "02",
-    title: "Share",
-    description: "Send your link to anyone. No account needed to view your wishlist.",
+    title: "Partagez",
+    description: "Envoyez votre lien à n'importe qui. Pas besoin de compte pour consulter.",
     icon: Share2,
   },
   {
     number: "03",
-    title: "Receive",
-    description: "Gifts get reserved anonymously. The surprise stays intact.",
+    title: "Recevez",
+    description: "Les cadeaux sont réservés anonymement. La surprise reste intacte.",
     icon: Heart,
   },
 ];
@@ -78,38 +78,38 @@ const steps = [
 const features = [
   {
     icon: EyeOff,
-    title: "Anonymous reservations",
-    description: "Surprises stay surprises. You'll never know who reserved what.",
+    title: "Réservations anonymes",
+    description: "Les surprises restent des surprises. Vous ne saurez jamais qui a réservé quoi.",
     gradient: "from-violet-500/20 to-purple-500/20",
   },
   {
     icon: Globe,
     title: "Auto-scraping",
-    description: "Paste a URL — we extract title, image and price automatically.",
+    description: "Collez une URL — on extrait le titre, l'image et le prix automatiquement.",
     gradient: "from-blue-500/20 to-cyan-500/20",
   },
   {
     icon: Puzzle,
-    title: "Chrome extension",
-    description: "One click to add items from any website to your wishlists.",
+    title: "Extension Chrome",
+    description: "Un clic pour ajouter des articles depuis n'importe quel site.",
     gradient: "from-orange-500/20 to-amber-500/20",
   },
   {
     icon: Smartphone,
-    title: "Install as app",
-    description: "Install on your phone. Share links directly from other apps.",
+    title: "Installer comme app",
+    description: "Installez sur votre téléphone. Partagez des liens depuis d'autres apps.",
     gradient: "from-green-500/20 to-emerald-500/20",
   },
   {
     icon: UserCircle,
-    title: "Public profiles",
-    description: "Your own page with all public wishlists in one place.",
+    title: "Profils publics",
+    description: "Votre propre page avec toutes vos wishlists publiques au même endroit.",
     gradient: "from-pink-500/20 to-rose-500/20",
   },
   {
     icon: Share2,
-    title: "Easy sharing",
-    description: "Anyone can view and reserve — no sign-up required.",
+    title: "Partage facile",
+    description: "N'importe qui peut consulter et réserver — sans créer de compte.",
     gradient: "from-indigo-500/20 to-blue-500/20",
   },
 ];
@@ -227,26 +227,26 @@ export default function LandingPage() {
               >
                 <AnimatedBadge>
                   <Sparkles className="h-3 w-3" />
-                  Free &amp; open — no ads, ever
+                  Gratuit &amp; ouvert — sans pub, jamais
                 </AnimatedBadge>
               </motion.div>
 
               <motion.h1
-                className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]"
+                className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]"
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
                 transition={{ duration: 0.6, delay: 0.15 }}
               >
-                Wishlists, shared.
-                <br />
+                Wishlists partagées.
+                <span className="hidden sm:inline"><br /></span>{" "}
                 <motion.span
                   className="text-muted-foreground"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                  Surprises, kept.
+                  Surprises préservées.
                 </motion.span>
               </motion.h1>
 
@@ -257,8 +257,8 @@ export default function LandingPage() {
                 variants={fadeUp}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                Create beautiful wishlists, share them with anyone. Gifts get
-                reserved anonymously &mdash; the surprise stays intact.
+                Créez de belles wishlists, partagez-les avec vos proches. Les cadeaux
+                sont réservés anonymement &mdash; la surprise reste intacte.
               </motion.p>
 
               <motion.div
@@ -270,12 +270,12 @@ export default function LandingPage() {
               >
                 <Button size="lg" className="group" asChild>
                   <Link href="/signup">
-                    Get started free
+                    Commencer gratuitement
                     <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="/signin">Sign in</Link>
+                  <Link href="/signin">Se connecter</Link>
                 </Button>
               </motion.div>
 
@@ -298,7 +298,7 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Loved by hundreds of users
+                  Adopté par des centaines d&apos;utilisateurs
                 </p>
               </motion.div>
             </div>
@@ -351,10 +351,10 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
             >
               <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-                Simple as 1-2-3
+                Simple comme 1-2-3
               </span>
               <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
-                How it works
+                Comment ça marche
               </h2>
             </motion.div>
 
@@ -411,13 +411,13 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
             >
               <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-                Features
+                Fonctionnalités
               </span>
               <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
-                Everything you need
+                Tout ce qu&apos;il vous faut
               </h2>
               <p className="mt-3 text-muted-foreground max-w-md mx-auto">
-                Designed to be simple yet powerful. No bloat, just what matters.
+                Conçu pour être simple et puissant. Pas de superflu, juste l&apos;essentiel.
               </p>
             </motion.div>
 
@@ -470,10 +470,10 @@ export default function LandingPage() {
               }}
             >
               {[
-                { value: "100%", label: "Free forever" },
-                { value: "0", label: "Ads" },
+                { value: "100%", label: "Gratuit pour toujours" },
+                { value: "0", label: "Publicité" },
                 { value: "∞", label: "Wishlists" },
-                { value: "< 1s", label: "To share" },
+                { value: "< 1s", label: "Pour partager" },
               ].map((stat) => (
                 <motion.div key={stat.label} variants={fadeUp} transition={{ duration: 0.5 }}>
                   <p className="text-3xl sm:text-4xl font-bold tracking-tight">
@@ -511,16 +511,16 @@ export default function LandingPage() {
                 variants={fadeUp}
                 transition={{ duration: 0.6 }}
               >
-                Ready to create
+                Prêt à créer
                 <br />
-                your wishlist?
+                votre wishlist ?
               </motion.h2>
               <motion.p
                 className="mt-4 text-muted-foreground text-lg"
                 variants={fadeUp}
                 transition={{ duration: 0.5 }}
               >
-                Join now. It takes less than 30 seconds.
+                Rejoignez-nous. Ça prend moins de 30 secondes.
               </motion.p>
               <motion.div
                 className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
@@ -529,7 +529,7 @@ export default function LandingPage() {
               >
                 <Button size="lg" className="group min-w-48" asChild>
                   <Link href="/signup">
-                    Create your account
+                    Créer votre compte
                     <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </Button>
@@ -540,13 +540,13 @@ export default function LandingPage() {
                 transition={{ duration: 0.5 }}
               >
                 <span className="flex items-center gap-1">
-                  <Check className="h-3.5 w-3.5" /> Free forever
+                  <Check className="h-3.5 w-3.5" /> Gratuit pour toujours
                 </span>
                 <span className="flex items-center gap-1">
-                  <Check className="h-3.5 w-3.5" /> No credit card
+                  <Check className="h-3.5 w-3.5" /> Sans carte bancaire
                 </span>
                 <span className="flex items-center gap-1">
-                  <Check className="h-3.5 w-3.5" /> No ads
+                  <Check className="h-3.5 w-3.5" /> Sans pub
                 </span>
               </motion.div>
             </motion.div>

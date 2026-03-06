@@ -24,14 +24,14 @@ export async function generateMetadata({
 
   if (!user) return {};
 
-  const name = user.name || "User";
+  const name = user.name || "Utilisateur";
 
   return {
     title: `${name} - Envly`,
-    description: user.description || `${name}'s profile on Envly`,
+    description: user.description || `Profil de ${name} sur Envly`,
     openGraph: {
       title: name,
-      description: user.description || `${name}'s profile on Envly`,
+      description: user.description || `Profil de ${name} sur Envly`,
       ...(user.image ? { images: [{ url: user.image }] } : {}),
     },
   };
@@ -107,12 +107,12 @@ export default async function PublicProfilePage({
               {user.name?.[0]?.toUpperCase() || "?"}
             </AvatarFallback>
           </Avatar>
-          <h1 className="text-2xl font-semibold">{user.name || "Anonymous"}</h1>
+          <h1 className="text-2xl font-semibold">{user.name || "Anonyme"}</h1>
           {user.description && (
             <p className="text-muted-foreground text-sm mt-1">{user.description}</p>
           )}
           <p className="text-muted-foreground text-sm mt-1">
-            {user.collections.length} public collection{user.collections.length !== 1 ? "s" : ""}
+            {user.collections.length} collection{user.collections.length !== 1 ? "s" : ""} publique{user.collections.length !== 1 ? "s" : ""}
           </p>
           {!isOwn && session && (
             <div className="mt-3">
@@ -138,7 +138,7 @@ export default async function PublicProfilePage({
             <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-muted/50 mb-4">
               <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
             </div>
-            <p className="text-muted-foreground">No public collections yet</p>
+            <p className="text-muted-foreground">Pas encore de collection publique</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -177,7 +177,7 @@ export default async function PublicProfilePage({
                       </p>
                     )}
                     <span className="text-xs text-muted-foreground mt-2 block">
-                      {collection._count.wishes} wish{collection._count.wishes !== 1 ? "es" : ""}
+                      {collection._count.wishes} souhait{collection._count.wishes !== 1 ? "s" : ""}
                     </span>
                   </div>
                 </Link>

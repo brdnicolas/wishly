@@ -1,7 +1,7 @@
 {
-  "name": "Envly — Your wishlists, beautifully shared",
+  "name": "Envly — Vos wishlists, magnifiquement partagées",
   "short_name": "Envly",
-  "description": "Create stunning wishlists, share them in one tap, and let your loved ones reserve gifts anonymously. No more duplicate gifts, no more ruined surprises.",
+  "description": "Créez de superbes wishlists, partagez-les en un clic et laissez vos proches réserver des cadeaux anonymement. Fini les doublons, fini les surprises gâchées.",
   "categories": ["lifestyle", "shopping", "social"],
   "start_url": "/dashboard",
   "display": "standalone",

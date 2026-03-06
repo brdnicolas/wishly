@@ -70,7 +70,7 @@ export default function SignUpPage() {
     });
 
     if (result?.error) {
-      setError("Account created but sign in failed. Please sign in manually.");
+      setError("Compte créé mais la connexion a échoué. Veuillez vous connecter manuellement.");
       setLoading(false);
     } else {
       router.push("/dashboard");
@@ -81,8 +81,8 @@ export default function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-sm rounded-2xl border-border/60 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create your account</CardTitle>
-          <CardDescription>Start creating and sharing wishlists</CardDescription>
+          <CardTitle className="text-xl">Créer votre compte</CardTitle>
+          <CardDescription>Commencez à créer et partager des wishlists</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button variant="outline" className="w-full rounded-xl" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
@@ -92,7 +92,7 @@ export default function SignUpPage() {
           <div className="relative">
             <Separator />
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-              or
+              ou
             </span>
           </div>
 
@@ -101,16 +101,16 @@ export default function SignUpPage() {
               <p className="text-sm text-destructive text-center">{error}</p>
             )}
             <div className="space-y-1.5">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Nom</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder="Votre nom"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Pseudo</Label>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm text-muted-foreground whitespace-nowrap">envly.app/</span>
                 <div className="relative flex-1">
@@ -145,11 +145,11 @@ export default function SignUpPage() {
                 </div>
               </div>
               {username.length >= 3 && usernameAvailable === false && (
-                <p className="text-[11px] text-destructive">This username is already taken</p>
+                <p className="text-[11px] text-destructive">Ce pseudo est déjà pris</p>
               )}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -160,7 +160,7 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Mot de passe</Label>
               <Input
                 id="password"
                 type="password"
@@ -171,14 +171,14 @@ export default function SignUpPage() {
               />
             </div>
             <Button type="submit" className="w-full rounded-xl" disabled={loading}>
-              {loading ? "Creating account..." : "Create account"}
+              {loading ? "Création..." : "Créer un compte"}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            Déjà un compte ?{" "}
             <Link href="/signin" className="text-foreground underline underline-offset-4 hover:text-primary">
-              Sign in
+              Se connecter
             </Link>
           </p>
         </CardContent>

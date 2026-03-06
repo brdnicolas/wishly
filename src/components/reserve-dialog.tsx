@@ -65,10 +65,10 @@ export function ReserveDialog({
       onReserved(wish.id, name);
       onOpenChange(false);
       setName("");
-      toast.success("Reserved! The owner won't see who reserved it.");
+      toast.success("Réservé ! Le propriétaire ne verra pas qui a réservé.");
     } else {
       const data = await res.json();
-      toast.error(data.error || "Failed to reserve");
+      toast.error(data.error || "Échec de la réservation");
     }
 
     setLoading(false);
@@ -78,24 +78,24 @@ export function ReserveDialog({
     <Dialog open={!!wish} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Reserve &ldquo;{wish?.title}&rdquo;</DialogTitle>
+          <DialogTitle>Réserver &laquo; {wish?.title} &raquo;</DialogTitle>
           <DialogDescription>
-            Enter your name so others know this item is taken. The owner will not see who reserved it.
+            Entrez votre nom pour que les autres sachent que cet article est pris. Le propriétaire ne verra pas qui a réservé.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="reserveName">Your name</Label>
+            <Label htmlFor="reserveName">Votre nom</Label>
             <Input
               id="reserveName"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
+              placeholder="Votre nom"
               required
             />
           </div>
           <Button type="submit" className="w-full rounded-xl" disabled={loading}>
-            {loading ? "Reserving..." : "Confirm reservation"}
+            {loading ? "Réservation..." : "Confirmer la réservation"}
           </Button>
         </form>
       </DialogContent>
@@ -126,10 +126,10 @@ export function CancelReservationButton({
     if (res.ok) {
       removeReservationToken(wishId);
       onCancelled(wishId);
-      toast.success("Reservation cancelled");
+      toast.success("Réservation annulée");
     } else {
       const data = await res.json();
-      toast.error(data.error || "Failed to cancel");
+      toast.error(data.error || "Échec de l'annulation");
     }
     setLoading(false);
   };
@@ -142,7 +142,7 @@ export function CancelReservationButton({
       onClick={handleCancel}
       disabled={loading}
     >
-      {loading ? "Cancelling..." : "Cancel reservation"}
+      {loading ? "Annulation..." : "Annuler la réservation"}
     </Button>
   );
 }

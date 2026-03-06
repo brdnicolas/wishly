@@ -12,12 +12,12 @@ export default function NotFound() {
         <div className="inline-flex items-center justify-center h-20 w-20 rounded-3xl bg-muted/50 mb-6">
           <FileQuestion className="h-10 w-10 text-muted-foreground/40" />
         </div>
-        <h1 className="text-2xl font-semibold mb-2">Page not found</h1>
+        <h1 className="text-2xl font-semibold mb-2">Page introuvable</h1>
         <p className="text-muted-foreground mb-8 max-w-sm">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
+          La page que vous cherchez n&apos;existe pas ou a été déplacée.
         </p>
         <Button className="rounded-xl" asChild>
-          <Link href="/">Back to home</Link>
+          <Link href="/">Retour à l&apos;accueil</Link>
         </Button>
       </main>
       <Footer />

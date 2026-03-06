@@ -45,11 +45,11 @@ export function WishCard({
   onCancelReservation?: (wishId: string) => void;
 }) {
   const handleDelete = async () => {
-    if (!confirm("Delete this wish?")) return;
+    if (!confirm("Supprimer ce souhait ?")) return;
     const res = await fetch(`/api/wishes/${wish.id}`, { method: "DELETE" });
     if (res.ok) {
       onDeleted?.(wish.id);
-      toast.success("Wish deleted");
+      toast.success("Souhait supprimé");
     }
   };
 
@@ -93,7 +93,7 @@ export function WishCard({
           <button
             className="h-7 w-7 rounded-xl bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background shadow-sm transition-colors"
             onClick={() => onTogglePriority?.(wish)}
-            title={wish.isPriority ? "Remove priority" : "Mark as priority"}
+            title={wish.isPriority ? "Retirer la priorité" : "Marquer comme prioritaire"}
           >
             <Star className={`h-3 w-3 ${wish.isPriority ? "fill-amber-400 text-amber-400" : ""}`} />
           </button>
@@ -125,7 +125,7 @@ export function WishCard({
       {!isOwner && isReserved && (
         <div className="absolute top-2 left-2">
           <Badge variant="secondary" className="text-[10px] shadow-sm px-2 py-0.5 rounded-lg backdrop-blur-sm">
-            Reserved by {wish.reservation?.reservedBy}
+            Réservé par {wish.reservation?.reservedBy}
           </Badge>
         </div>
       )}
@@ -151,7 +151,7 @@ export function WishCard({
             className="w-full h-7 text-[11px] mt-2 rounded-xl"
             onClick={() => onReserve?.(wish)}
           >
-            Reserve
+            Réserver
           </Button>
         )}
         {!isOwner && isReserved && getReservationToken(wish.id) && onCancelReservation && (

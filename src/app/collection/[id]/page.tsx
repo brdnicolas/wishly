@@ -110,14 +110,14 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
     });
     if (res.ok) {
       setCollection({ ...collection, isPublic: !collection.isPublic });
-      toast.success(collection.isPublic ? "Collection is now private" : "Collection is now public");
+      toast.success(collection.isPublic ? "Collection maintenant privée" : "Collection maintenant publique");
     }
   };
 
   const copyShareLink = () => {
     if (!collection) return;
     navigator.clipboard.writeText(`${window.location.origin}/w/${collection.slug}`);
-    toast.success("Share link copied!");
+    toast.success("Lien copié !");
   };
 
   const handleWishDeleted = (wishId: string) => {
@@ -142,7 +142,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
           w.id === wish.id ? { ...w, isPriority: !w.isPriority } : w
         ),
       });
-      toast.success(wish.isPriority ? "Priority removed" : "Marked as priority");
+      toast.success(wish.isPriority ? "Priorité retirée" : "Marqué comme prioritaire");
     }
   };
 
@@ -191,7 +191,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
           onClick={() => router.push("/dashboard")}
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
-          Back
+          Retour
         </Button>
 
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
@@ -219,7 +219,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                 checked={collection.isPublic}
                 onCheckedChange={togglePublic}
               />
-              <Label htmlFor="public" className="text-sm">Public</Label>
+              <Label htmlFor="public" className="text-sm">Publique</Label>
             </div>
 
             <Button
@@ -230,12 +230,12 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
               disabled={!collection.isPublic}
             >
               <Copy className="h-4 w-4 mr-1" />
-              Share
+              Partager
             </Button>
 
             <Button size="sm" className="rounded-xl" onClick={() => navigateToAdd()}>
               <Plus className="h-4 w-4 mr-1" />
-              Add
+              Ajouter
             </Button>
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                 <div className="h-12 w-12 rounded-2xl border-2 border-current flex items-center justify-center">
                   <Plus className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium">Add a wish</span>
+                <span className="text-sm font-medium">Ajouter un souhait</span>
               </button>
               {collection.wishes.map((wish) => (
                 <SortableWishCard
