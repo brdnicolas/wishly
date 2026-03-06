@@ -200,12 +200,12 @@ function AddPageContent() {
     setScraping(false);
   }, []);
 
-  // Auto-scrape on mount if URL provided (skip if extension already sent data)
+  // Auto-scrape on mount if URL provided (always scrape server-side, even from extension)
   useEffect(() => {
-    if (sharedUrl && !fromExtension) {
+    if (sharedUrl) {
       scrapeUrl(sharedUrl);
     }
-  }, [sharedUrl, scrapeUrl, fromExtension]);
+  }, [sharedUrl, scrapeUrl]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

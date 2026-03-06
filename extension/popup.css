@@ -15,10 +15,21 @@ body {
   padding: 16px;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.logo {
+  width: 22px;
+  height: 22px;
+}
+
 h1 {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 14px;
   color: #ffffff;
 }
 
@@ -35,10 +46,11 @@ input {
   font-size: 13px;
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
-  border-radius: 6px;
+  border-radius: 8px;
   color: #e5e5e5;
   outline: none;
   margin-bottom: 10px;
+  transition: border-color 0.2s;
 }
 
 input:focus {
@@ -58,9 +70,10 @@ button {
   background: #ffffff;
   color: #0a0a0a;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 4px;
+  transition: background 0.2s;
 }
 
 button:hover {

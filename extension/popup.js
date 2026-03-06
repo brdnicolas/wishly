@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const price = encodeURIComponent(scrapedData?.price || "");
     const images = encodeURIComponent(JSON.stringify(scrapedData?.images || []));
     chrome.tabs.create({
-      url: `https://envly.vercel.app/add?url=${url}&title=${title}&price=${price}&images=${images}&from=extension`,
+      url: `https://envly.fr/add?url=${url}&title=${title}&price=${price}&images=${images}&from=extension`,
     });
     window.close();
   });

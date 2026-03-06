@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://envly.app"),
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://envly.fr"),
   title: "Envly — Vos wishlists, magnifiquement partagées",
   description: "Créez de superbes wishlists, partagez-les avec vos proches et laissez-les réserver des cadeaux anonymement. Fini les doublons, fini les surprises gâchées.",
   manifest: "/manifest.json",

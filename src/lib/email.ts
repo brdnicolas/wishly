@@ -7,24 +7,24 @@ function getResend() {
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://envly.app";
+  const baseUrl = process.env.NEXTAUTH_URL || "https://envly.fr";
   const resetLink = `${baseUrl}/reset-password?token=${token}`;
   const resend = getResend();
 
   await resend.emails.send({
-    from: "Envly <noreply@envly.app>",
+    from: "Envly <noreply@envly.fr>",
     to: email,
-    subject: "Reset your password",
+    subject: "Réinitialiser votre mot de passe",
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
-        <h2>Reset your password</h2>
-        <p>You requested a password reset for your Envly account.</p>
+        <h2>Réinitialiser votre mot de passe</h2>
+        <p>Vous avez demandé la réinitialisation du mot de passe de votre compte Envly.</p>
         <p>
           <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 6px;">
-            Reset password
+            Réinitialiser le mot de passe
           </a>
         </p>
-        <p style="color: #666; font-size: 14px;">This link expires in 1 hour. If you didn&apos;t request this, you can safely ignore this email.</p>
+        <p style="color: #666; font-size: 14px;">Ce lien expire dans 1 heure. Si vous n'avez pas fait cette demande, vous pouvez ignorer cet email.</p>
       </div>
     `,
   });

@@ -1,15 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Add to Envly",
+  "name": "Envly — Ajouter à ma wishlist",
   "version": "1.0.0",
-  "description": "Add any page to your Envly wishlist in one click",
+  "description": "Ajoutez n'importe quel produit à votre wishlist Envly en un clic. Prix, images et détails sont récupérés automatiquement.",
   "permissions": ["activeTab", "scripting", "cookies"],
-  "host_permissions": ["https://envly.vercel.app/*"],
+  "host_permissions": ["https://envly.fr/*"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
+    "default_title": "Ajouter à Envly",
     "default_icon": {
       "16": "icons/icon-16.png",
       "48": "icons/icon-48.png",

@@ -1,4 +1,4 @@
-const ENVLY_URL = "https://envly.vercel.app";
+const ENVLY_URL = "https://envly.fr";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "CHECK_URL") {

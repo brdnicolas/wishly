@@ -250,7 +250,7 @@ export default function SettingsPage() {
             <div className="space-y-1.5">
               <Label htmlFor="slug">Pseudo</Label>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm text-muted-foreground whitespace-nowrap">envly.app/u/</span>
+                <span className="text-sm text-muted-foreground whitespace-nowrap">envly.fr/u/</span>
                 <div className="relative flex-1">
                   <Input
                     id="slug"

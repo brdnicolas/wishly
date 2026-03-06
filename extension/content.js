@@ -1,5 +1,5 @@
 (() => {
-  const ENVLY_URL = "https://envly.vercel.app";
+  const ENVLY_URL = "https://envly.fr";
   const PRICE_REGEX =
     /(?:\d[\d\s.,]*\d\s*[€$£]|[€$£]\s*\d[\d\s.,]*\d|\d[\d\s.,]*\d\s*(?:EUR|USD|GBP))/i;
 
@@ -120,8 +120,8 @@
 
   const btn = document.createElement("button");
   btn.id = "envly-fab";
-  btn.title = "Add to Envly";
-  btn.setAttribute("aria-label", "Add to Envly");
+  btn.title = "Ajouter à Envly";
+  btn.setAttribute("aria-label", "Ajouter à Envly");
 
   const ICON_PLUS = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
   const ICON_CHECK = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
