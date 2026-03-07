@@ -3,7 +3,7 @@
   "short_name": "Envly",
   "description": "Créez vos wishlists, partagez-les et laissez vos proches réserver anonymement.",
   "categories": ["lifestyle", "shopping", "social"],
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
