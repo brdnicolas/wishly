@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2, Check, Gift, Plus, ImagePlus, Globe, Lock, Puzzle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -127,6 +128,7 @@ function AddPageContent() {
 
   const [url, setUrl] = useState(sharedUrl);
   const [title, setTitle] = useState(searchParams.get("title") || "");
+  const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(extensionImages[0] || "");
   const [price, setPrice] = useState(fromExtension ? (searchParams.get("price") || "") : "");
   const [images, setImages] = useState<string[]>(extensionImages);
@@ -285,6 +287,7 @@ function AddPageContent() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title,
+        description: description || null,
         url: url || null,
         imageUrl: imageUrl || null,
         price: price || null,
@@ -439,6 +442,18 @@ function AddPageContent() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Que souhaitez-vous ?"
                 required
+              />
+            </div>
+
+            {/* Note */}
+            <div className="space-y-1.5">
+              <Label htmlFor="description">Note personnelle (optionnel)</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Taille, couleur, détails..."
+                rows={2}
               />
             </div>
 
