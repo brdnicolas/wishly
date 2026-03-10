@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,131 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, X, Mail, LayoutGrid, Settings, LogOut, Users } from "lucide-react";
+import { Mail, LayoutGrid, Settings, LogOut, Users } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
-
-interface SearchUser {
-  id: string;
-  name: string | null;
-  image: string | null;
-  slug: string | null;
-}
-
-function HeaderSearch() {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchUser[]>([]);
-  const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    if (query.trim().length < 2) {
-      setResults([]);
-      return;
-    }
-
-    debounceRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `/api/users/search?q=${encodeURIComponent(query.trim())}`
-        );
-        if (res.ok) setResults(await res.json());
-      } finally {
-        setLoading(false);
-      }
-    }, 300);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query]);
-
-  // Close on click outside
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  if (!open) {
-    return (
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setOpen(true)}
-        className="rounded-full"
-      >
-        <Search className="h-4 w-4" />
-      </Button>
-    );
-  }
-
-  return (
-    <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-1">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            autoFocus
-            placeholder="Rechercher..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="h-8 w-48 pl-8 text-sm rounded-xl"
-          />
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => {
-            setOpen(false);
-            setQuery("");
-            setResults([]);
-          }}
-        >
-          <X className="h-3.5 w-3.5" />
-        </Button>
-      </div>
-
-      {(results.length > 0 || loading || (query.trim().length >= 2 && !loading)) && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-popover/95 backdrop-blur-xl border border-border/60 rounded-2xl shadow-xl z-50 overflow-hidden">
-          {loading && (
-            <p className="text-xs text-muted-foreground p-3">Recherche...</p>
-          )}
-          {!loading && query.trim().length >= 2 && results.length === 0 && (
-            <p className="text-xs text-muted-foreground p-3">Aucun utilisateur trouvé</p>
-          )}
-          {results.map((user) => (
-            <Link
-              key={user.id}
-              href={user.slug ? `/u/${user.slug}` : "#"}
-              className="flex items-center gap-2.5 p-2.5 hover:bg-accent/50 transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              <Avatar className="h-8 w-8 shrink-0">
-                {user.image ? <AvatarImage src={user.image} alt={user.name || ""} /> : null}
-                <AvatarFallback className="text-xs">
-                  {user.name?.[0]?.toUpperCase() || "?"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm truncate">
-                {user.name || "Anonyme"}
-              </span>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function Header() {
   const { data: session } = useSession();
@@ -159,7 +34,6 @@ export function Header() {
                   <Users className="h-4 w-4" />
                 </Link>
               </Button>
-              <HeaderSearch />
               <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

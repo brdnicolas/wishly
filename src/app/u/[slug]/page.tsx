@@ -17,8 +17,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const user = await prisma.user.findUnique({
-    where: { slug },
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ slug }, { id: slug }] },
     select: { name: true, description: true, image: true },
   });
 
@@ -44,8 +44,9 @@ export default async function PublicProfilePage({
 }) {
   const { slug } = await params;
 
-  const user = await prisma.user.findUnique({
-    where: { slug },
+  // Try by slug first, then by id
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ slug }, { id: slug }] },
     select: {
       id: true,
       name: true,

@@ -301,8 +301,7 @@ function AddPageContent() {
         return;
       }
       toast.success("Souhait ajouté !");
-      const collection = collections.find((c) => c.id === selectedCollectionId);
-      router.push(collection ? `/collection/${collection.slug}` : "/");
+      router.push(`/collection/${selectedCollectionId}`);
     } else {
       toast.error("Échec de l'ajout du souhait");
     }

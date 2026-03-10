@@ -272,16 +272,16 @@ export function DashboardView() {
               )}
               <p className="text-xs text-muted-foreground mt-0.5">{profile.email}</p>
               <div className="flex items-center gap-3 mt-2 justify-center sm:justify-start">
-                <span className="text-sm">
+                <Link href="/friends?tab=following" className="text-sm hover:underline underline-offset-4">
                   <span className="font-medium">{stats?.followingCount ?? 0}</span>{" "}
                   <span className="text-muted-foreground">abonnements</span>
-                </span>
-                <span className="text-sm">
+                </Link>
+                <Link href="/friends?tab=followers" className="text-sm hover:underline underline-offset-4">
                   <span className="font-medium">{stats?.followersCount ?? 0}</span>{" "}
                   <span className="text-muted-foreground">
                     abonné{(stats?.followersCount ?? 0) !== 1 ? "s" : ""}
                   </span>
-                </span>
+                </Link>
                 <span className="text-muted-foreground text-sm">&middot;</span>
                 <span className="text-sm text-muted-foreground">
                   {(collections?.length ?? 0)} collection{(collections?.length ?? 0) !== 1 ? "s" : ""}
