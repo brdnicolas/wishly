@@ -3,7 +3,7 @@
   "name": "Envly — Ajouter à ma wishlist",
   "version": "1.0.0",
   "description": "Ajoutez n'importe quel produit à votre wishlist Envly en un clic. Prix, images et détails sont récupérés automatiquement.",
-  "permissions": ["activeTab", "scripting", "cookies"],
+  "permissions": ["activeTab", "scripting"],
   "host_permissions": ["https://envly.fr/*"],
   "background": {
     "service_worker": "background.js"
