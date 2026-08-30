@@ -382,15 +382,14 @@ function AddPageContent() {
 
             {/* Image */}
             <div className="space-y-1.5">
-              <Label>Image</Label>
-              <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto rounded-xl border border-border/60 p-2 [-webkit-backface-visibility:hidden] [backface-visibility:hidden]">
+              <div className="grid grid-cols-4 gap-2 max-h-60 overflow-y-auto rounded-xl border border-border/60 p-2">
                 {images.map((img) => (
                   <button
                     key={img}
                     type="button"
                     onClick={() => setImageUrl(img)}
                     className={cn(
-                      "relative aspect-square rounded-md overflow-hidden border-2 transition-all hover:opacity-90",
+                      "relative aspect-square rounded-md border-2 transition-all hover:opacity-90",
                       imageUrl === img
                         ? "border-primary ring-2 ring-primary/30"
                         : "border-transparent"
@@ -399,7 +398,7 @@ function AddPageContent() {
                     <img
                       src={img}
                       alt=""
-                      className="block w-full h-full object-cover"
+                      className="w-full h-full object-cover"
                       onError={(e) => {
                         (e.currentTarget.parentElement as HTMLElement).style.display = "none";
                       }}
