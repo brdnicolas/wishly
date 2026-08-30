@@ -102,7 +102,7 @@ export function WishCard({
           className={`absolute top-2 left-2 h-7 w-7 rounded-xl backdrop-blur-sm flex items-center justify-center shadow-sm transition-all duration-200 ${
             wish.isPriority
               ? "bg-amber-400/90"
-              : "bg-background/80 hover:bg-background opacity-0 group-hover:opacity-100"
+              : "bg-background/80 hover:bg-background md:opacity-0 md:group-hover:opacity-100"
           }`}
           onClick={() => onTogglePriority?.(wish)}
           title={wish.isPriority ? "Retirer la priorité" : "Marquer comme prioritaire"}
@@ -122,7 +122,7 @@ export function WishCard({
 
       {/* Owner actions (top-right) */}
       {isOwner && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        <div className="absolute top-2 right-2 flex gap-1 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200">
           <button
             className="h-7 w-7 rounded-xl bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background shadow-sm transition-colors"
             onClick={() => onEdit?.(wish)}
